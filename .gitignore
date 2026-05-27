@@ -1,0 +1,14 @@
+# Compilados
+bin/
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.class
+
+# Sistema
+.DS_Store
