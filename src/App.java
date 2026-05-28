@@ -3,8 +3,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.google.gson.Gson;
+
 public class App {
     public static void main(String[] args) throws Exception {
+        Gson gson = new Gson();
         try {
             Connection conn = DriverManager.getConnection(
                 "jdbc:oracle:thin:@192.168.1.12:15022/sebq", 
