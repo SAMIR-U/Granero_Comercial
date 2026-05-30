@@ -32,7 +32,7 @@ public final class BDConnection {
         return conn;
     }
 
-    public boolean initConnection(String password){
+    public boolean initConnection(String id, String password){
         try {
             ConfigReader cr = ConfigReader.getInstance();
             String bd_ip = cr.getBdIp();
