@@ -6,7 +6,7 @@ public class Login extends JFrame{
     private boolean waiting;
 
     public Login(){
-        this.waiting = false;
+        this.waiting = true;
     }
 
     public String getCredentials(){
@@ -14,14 +14,14 @@ public class Login extends JFrame{
         return null;
     }
 
-    public boolean isValidLogin() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isValidLogin'");
-    }
-
     public boolean isWaiting() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'isWaiting'");
+    }
+
+    public void setValidLogin(boolean result) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setValidLogin'");
     }
     
 }

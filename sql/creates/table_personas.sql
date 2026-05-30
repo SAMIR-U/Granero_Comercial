@@ -8,4 +8,5 @@ CREATE TABLE PERSONAS(
     CONSTRAINT per_ck_tipper CHECK(tipo_persona IN ('CLIENTE','VENDEDOR')),
     CONSTRAINT per_pk_idclie  PRIMARY KEY (id_cliente),
     CONSTRAINT per_fk_idciud  FOREIGN KEY (id_ciudad) REFERENCES CIUDADES(id_ciudad)
+    CONSTRAINT per_uq_doc UNIQUE (documento_cliente)
 )
