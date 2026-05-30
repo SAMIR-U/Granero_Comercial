@@ -21,4 +21,3 @@ GROUP BY
     CI.nombre_ciudad
 ORDER BY total_gastado DESC
 FETCH FIRST ? ROWS ONLY
--- hola

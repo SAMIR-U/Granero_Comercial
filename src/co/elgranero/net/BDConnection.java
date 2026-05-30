@@ -10,6 +10,8 @@ import co.elgranero.persistence.ConfigReader;
 public final class BDConnection {
     private static Connection conn;
 
+    private BDConnection(){}
+
     public static Connection getInstance(){
         if (conn == null) {
             throw new NullPointerException("The connection has not been initialized. Use \"initConnection\" method first");

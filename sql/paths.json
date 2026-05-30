@@ -1,0 +1,59 @@
+{
+    "create_tables_order": [
+        "PAISES",
+        "FORMAS_PAGOS",
+        "PROVEEDORES",
+        "CATEGORIAS_PRODUCTOS",
+        "PRESENTACIONES",
+        "CIUDADES",
+        "SUBCATEGORIAS_PRODUCTOS",
+        "PERSONAS",
+        "PRODUCTOS",
+        "PRESENTACIONES_PRODUCTOS",
+        "COMPRAS",
+        "VENTAS",
+        "PRODUCTOS_COMPRAS",
+        "VENTAS_PRODUCTOS"
+    ],
+    "creates": {
+        "table_categorias_productos": "sql/creates/table_categorias_productos.sql",
+        "table_ciudades": "sql/creates/table_ciudades.sql",
+        "table_compras": "sql/creates/table_compras.sql",
+        "table_formas_pagos": "sql/creates/table_formas_pagos.sql",
+        "table_paises": "sql/creates/table_paises.sql",
+        "table_personas": "sql/creates/table_personas.sql",
+        "table_presentaciones_productos": "sql/creates/table_presentaciones_productos.sql",
+        "table_presentaciones": "sql/creates/table_presentaciones.sql",
+        "table_productos_compras": "sql/creates/table_productos_compras.sql",
+        "table_productos": "sql/creates/table_productos.sql",
+        "table_proveedores": "sql/creates/table_proveedores.sql",
+        "table_subcategorias_productos": "sql/creates/table_subcategorias_productos.sql",
+        "table_ventas_productos": "sql/creates/table_ventas_productos.sql",
+        "table_ventas": "sql/creates/table_ventas.sql"
+    },
+    "inserts": {
+        "categorias_productos": "sql/inserts/categorias_productos.sql",
+        "ciudades": "sql/inserts/ciudades.sql",
+        "compras": "sql/inserts/compras.sql",
+        "formas_pagos": "sql/inserts/formas_pagos.sql",
+        "paises": "sql/inserts/paises.sql",
+        "personas": "sql/inserts/personas.sql",
+        "presentaciones_productos": "sql/inserts/presentaciones_productos.sql",
+        "presentaciones": "sql/inserts/presentaciones.sql",
+        "productos_compras": "sql/inserts/productos_compras.sql",
+        "productos": "sql/inserts/productos.sql",
+        "proveedores": "sql/inserts/proveedores.sql",
+        "subcategorias_productos": "sql/inserts/subcategorias_productos.sql",
+        "ventas_productos": "sql/inserts/ventas_productos.sql",
+        "ventas": "sql/inserts/ventas.sql"
+    },
+    "selects": {
+        "compare_sales_over_time": "sql/selects/compare_sales_over_time.sql",
+        "customer_purchase_history": "sql/selects/customer_purchase_history.sql",
+        "customer_purchase_volume": "sql/selects/customer_purchase_volume.sql",
+        "sales_by_customer": "sql/selects/sales_by_customer.sql",
+        "sales_by_product_category": "sql/selects/sales_by_product_category.sql",
+        "sales_by_product": "sql/selects/sales_by_product.sql",
+        "top_selling_products": "sql/selects/top_selling_products.sql"
+    }
+}
