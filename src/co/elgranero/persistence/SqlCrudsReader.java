@@ -5,11 +5,12 @@ public final class SqlCrudsReader {
 
     private SqlCrudsReader(){}
 
-
     public static SqlCrudsReader getInstance(){
         if(sqlCrudReader == null){
             sqlCrudReader = new SqlCrudsReader();
         }
         return sqlCrudReader;
     }
+
+
 }

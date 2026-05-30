@@ -47,8 +47,3 @@ public final class ConfigReader {
         return conReader;
     }
 }
-
-class Config {
-    public String bdIp;
-    public String bdUser;
-}
