@@ -5,18 +5,11 @@ import co.elgranero.view.Login;
 import co.elgranero.view.View;
 
 public class Runner {
-    private final String[] states ={
-        "Login",
-        "Cheking tables",
-        "Creating tables"
-    };
     private View view;
     private int tries;
-    private String status;
 
     public Runner(){
         this.view = new View();
-        this.status = states[0];
         this.tries = 0;
     }
 
@@ -32,7 +25,6 @@ public class Runner {
 
     private boolean login(){
         Login login = view.showLogin();
-        status = states[0];
 
         BDConnection bdConn = BDConnection.getInstance();
         boolean result = false;
@@ -48,10 +40,6 @@ public class Runner {
 
         return result;
     }
-
-    public String getStatus() {
-        return status;
-    }    
 
     private boolean checkTables() {
         //no implement 
