@@ -1,0 +1,2 @@
+INSERT INTO CATEGORIAS_PRODUCTOS (nombre_categoria)
+VALUES (?)

@@ -1,0 +1,2 @@
+INSERT INTO PAISES (nombre_pais)
+VALUES (?)
