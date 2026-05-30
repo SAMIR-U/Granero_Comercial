@@ -5,6 +5,7 @@ import co.elgranero.view.View;
 
 public class Runner {
     public void init(){
+        //no implement
         Login login = new Login();
         while (!login.isValidLogin()) {
             while (login.isWaiting());
