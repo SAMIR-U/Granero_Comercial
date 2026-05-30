@@ -10,12 +10,14 @@ public class Runner {
         "Cheking tables",
         "Creating tables"
     };
+    private View view;
     private int tries;
     private String status;
 
     public Runner(){
-        status = states[0];
-        tries = 0;
+        this.view = new View();
+        this.status = states[0];
+        this.tries = 0;
     }
 
     public void init(){
@@ -23,13 +25,13 @@ public class Runner {
         if (result) {
             result = login();
             if (result) {
-                new View();
+                
             }
         }
     }
 
     private boolean login(){
-        Login login = new Login();
+        Login login = view.showLogin();
         status = states[0];
 
         BDConnection bdConn = BDConnection.getInstance();
