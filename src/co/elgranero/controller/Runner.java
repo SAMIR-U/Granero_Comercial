@@ -1,7 +1,5 @@
 package co.elgranero.controller;
 
-import java.sql.Connection;
-
 import co.elgranero.net.BDConnection;
 import co.elgranero.view.Login;
 import co.elgranero.view.View;
@@ -16,32 +14,45 @@ public class Runner {
     private String status;
 
     public Runner(){
+        status = states[0];
         tries = 0;
     }
 
     public void init(){
-        login();
-        if (checkTables()){
-            new View();
+        boolean result = checkTables();
+        if (result) {
+            result = login();
+            if (result) {
+                new View();
+            }
         }
     }
 
     private boolean login(){
-        boolean result = false;
-        status = states[0];
         Login login = new Login();
+        status = states[0];
+
+        BDConnection bdConn = BDConnection.getInstance();
+        boolean result = false;
+
         while (tries < 10 && !result){
             while (login.isWaiting());
-            String password = login.getCredentials();
-            result = BDConnection.initConnection(password);
-            login.setValidLogin(result);
+            String[] credentials = login.getCredentials();
+            result = bdConn.initConnection(credentials[0],credentials[1]);
+            //desactivar el botón de submit
+            login.setValidLogin(result, tries);
             tries++;
         }
+
         return result;
     }
 
+    public String getStatus() {
+        return status;
+    }    
+
     private boolean checkTables() {
-        //no implement
+        //no implement 
         createTables();
         return false;
     }
