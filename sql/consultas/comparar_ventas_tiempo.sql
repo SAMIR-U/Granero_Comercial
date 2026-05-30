@@ -1,3 +1,4 @@
+SELECT
     CASE
         WHEN V.fecha_venta BETWEEN ? AND ? THEN 'Periodo 1'
         WHEN V.fecha_venta BETWEEN ? AND ? THEN 'Periodo 2'
@@ -9,11 +10,11 @@ FROM VENTAS V
 JOIN VENTAS_PRODUCTOS VP
     ON VP.id_venta = V.id_venta
 WHERE
-    V.fecha_venta BETWEEN ? AND ?
-    OR V.fecha_venta BETWEEN ? AND ?
+    V.fecha_venta BETWEEN ? AND ?           -- inicio_p1, fin_p1
+    OR V.fecha_venta BETWEEN ? AND ?        -- inicio_p2, fin_p2
 GROUP BY
     CASE
         WHEN V.fecha_venta BETWEEN ? AND ? THEN 'Periodo 1'
         WHEN V.fecha_venta BETWEEN ? AND ? THEN 'Periodo 2'
     END
-ORDER BY periodo
+ORDER BY periodo;
