@@ -1,19 +1,61 @@
 {
     "create_tables_order": [
-        "PAISES",
-        "FORMAS_PAGOS",
-        "PROVEEDORES",
-        "CATEGORIAS_PRODUCTOS",
-        "PRESENTACIONES",
-        "CIUDADES",
-        "SUBCATEGORIAS_PRODUCTOS",
-        "PERSONAS",
-        "PRODUCTOS",
-        "PRESENTACIONES_PRODUCTOS",
-        "COMPRAS",
-        "VENTAS",
-        "PRODUCTOS_COMPRAS",
-        "VENTAS_PRODUCTOS"
+        {
+            "table": "PAISES",
+            "select": "SELECT * FROM PAISES;"
+        },
+        {
+            "table": "FORMAS_PAGOS",
+            "select": "SELECT * FROM FORMAS_PAGOS;"
+        },
+        {
+            "table": "PROVEEDORES",
+            "select": "SELECT * FROM PROVEEDORES;"
+        },
+        {
+            "table": "CATEGORIAS_PRODUCTOS",
+            "select": "SELECT * FROM CATEGORIAS_PRODUCTOS;"
+        },
+        {
+            "table": "PRESENTACIONES",
+            "select": "SELECT * FROM PRESENTACIONES;"
+        },
+        {
+            "table": "CIUDADES",
+            "select": "SELECT * FROM CIUDADES;"
+        },
+        {
+            "table": "SUBCATEGORIAS_PRODUCTOS",
+            "select": "SELECT * FROM SUBCATEGORIAS_PRODUCTOS;"
+        },
+        {
+            "table": "PERSONAS",
+            "select": "SELECT * FROM PERSONAS;"
+        },
+        {
+            "table": "PRODUCTOS",
+            "select": "SELECT * FROM PRODUCTOS;"
+        },
+        {
+            "table": "PRESENTACIONES_PRODUCTOS",
+            "select": "SELECT * FROM PRESENTACIONES_PRODUCTOS;"
+        },
+        {
+            "table": "COMPRAS",
+            "select": "SELECT * FROM COMPRAS;"
+        },
+        {
+            "table": "VENTAS",
+            "select": "SELECT * FROM VENTAS;"
+        },
+        {
+            "table": "PRODUCTOS_COMPRAS",
+            "select": "SELECT * FROM PRODUCTOS_COMPRAS;"
+        },
+        {
+            "table": "VENTAS_PRODUCTOS",
+            "select": "SELECT * FROM VENTAS_PRODUCTOS;"
+        }
     ],
     "creates": {
         "table_categorias_productos": "sql/creates/table_categorias_productos.sql",
@@ -54,6 +96,7 @@
         "sales_by_customer": "sql/selects/sales_by_customer.sql",
         "sales_by_product_category": "sql/selects/sales_by_product_category.sql",
         "sales_by_product": "sql/selects/sales_by_product.sql",
-        "top_selling_products": "sql/selects/top_selling_products.sql"
+        "top_selling_products": "sql/selects/top_selling_products.sql",
+        "validate_seller_id": "sql/selects/vendedor_id.sql"
     }
 }

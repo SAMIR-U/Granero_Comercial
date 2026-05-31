@@ -42,7 +42,7 @@ public class Runner {
     }
 
     private boolean checkTables() {
-        //no implement 
+        
         createTables();
         return false;
     }

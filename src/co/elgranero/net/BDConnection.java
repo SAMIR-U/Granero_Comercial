@@ -28,24 +28,27 @@ public final class BDConnection {
         return conn;
     }
 
-    private Connection getConnectionSql(){
-        return conn;
+    public boolean initConnection(String id, String password){
+        boolean result = false;
+        try {
+            if (validateId()) {   
+                ConfigReader cr = ConfigReader.getInstance();
+                String bd_ip = cr.getBdIp();
+                String bd_user = cr.getBdUser();
+                conn = DriverManager.getConnection(
+                    bd_ip, 
+                    bd_user,
+                    password
+                );
+                result = true;
+            }
+        } catch (SQLException|IOException e) {}
+        return result;
     }
 
-    public boolean initConnection(String id, String password){
-        try {
-            ConfigReader cr = ConfigReader.getInstance();
-            String bd_ip = cr.getBdIp();
-            String bd_user = cr.getBdUser();
-            conn = DriverManager.getConnection(
-                bd_ip, 
-                bd_user,
-                password
-            );
-        } catch (SQLException|IOException e) {
-            return false;
-        }
-        return true;
+    private boolean validateId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'validateId'");
     }
 
 }
