@@ -1,4 +1,6 @@
 {
-    "bd_ip":"jdbc:oracle:thin:@192.168.1.12:15022/sebq",
-    "user":"system"
+    "bdIp":"jdbc:oracle:thin:@192.168.1.12:15022/sebq",
+    "bdUser":"system",
+    "bdPass":"Z4P4T0Z0!",
+    "firstUser":"INSERT INTO PERSONAS (id_ciudad, nombre_cliente, documento_cliente, telefono_cliente, tipo_persona) VALUES (?, ?, ?, ?, ?)"
 }
