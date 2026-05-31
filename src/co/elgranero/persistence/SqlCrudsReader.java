@@ -35,19 +35,19 @@ public final class SqlCrudsReader {
         return sqlCrudReader;
     }
 
-    public List<String> getCreateTablesOrder(){
+    public List<TableConfig> getCreateTablesOrder(){
         return sqlCruds.create_tables_order;
     }
 
-    public Map<String, String> getCreates(){
-        return sqlCruds.creates;
+    public String getCreateQueryOf(String key){
+        return sqlCruds.creates.get(key);
     }
 
-    public Map<String, String> getInserts(){
-        return sqlCruds.inserts;
+    public String getInsertsQueryOf(String key){
+        return sqlCruds.inserts.get(key);
     }
 
-    public Map<String, String> getSelects(){
-        return sqlCruds.selects;
+    public String getConsultOf(String key){
+        return sqlCruds.selects.get(key);
     }
 }
