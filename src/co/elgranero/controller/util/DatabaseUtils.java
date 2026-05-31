@@ -22,6 +22,7 @@ public final class DatabaseUtils {
     }
     public static ResultSet sendBDRequest(Connection conn, PreparedStatement pSt) throws SQLException{
         ResultSet rs = pSt.executeQuery();
+        pSt.close();
         return rs;
     }
 

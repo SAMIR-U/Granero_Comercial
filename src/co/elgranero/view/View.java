@@ -4,11 +4,13 @@ import javax.swing.JFrame;
 
 public class View extends JFrame{
     public static final String[] states ={
-        "Login",
+        "La app no ha podido Inciar Correctamente",
         "Cheking tables",
-        "Creating tables"
+        "initializing tables",
+        "Successful login",
+        "Login locked"
     };
-    public String status;
+    private String status;
 
 	public void setStatus(int stateId) {
         this.status = states[stateId];
@@ -18,5 +20,15 @@ public class View extends JFrame{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'showLogin'");
 	}
+
+    public void showMainMenu() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'showMainMenu'");
+    }
+
+    public void setStatus(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'showMainMenu'");
+    }
     
 }

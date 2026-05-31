@@ -27,23 +27,22 @@ public final class ConfigReader {
     }
 
     public String getBdIp() throws IOException{
-        if (config==null) {
-            readConfig();
-        }
         return config.bdIp;
     }
 
     public String getBdUser() throws IOException{
-        if (config==null) {
-            readConfig();
-        }
         return config.bdUser;
     }
-
+    
+    public String getBdPassword(){
+        return config.bdPass;
+    }
+    
     public static ConfigReader getInstance() throws IOException{
         if (conReader == null) {
             conReader = new ConfigReader();
         }
         return conReader;
     }
+
 }

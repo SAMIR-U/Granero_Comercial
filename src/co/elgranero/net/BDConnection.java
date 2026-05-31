@@ -28,22 +28,38 @@ public final class BDConnection {
         return conn;
     }
 
-    public boolean initConnection(String id, String password){
+    public boolean initUserConnection(String id, String password) throws SQLException, IOException{
         boolean result = false;
+        if (validateId()) {   
+            ConfigReader cr = ConfigReader.getInstance();
+            String bd_ip = cr.getBdIp();
+            String bd_user = cr.getBdUser();
+            conn = DriverManager.getConnection(
+                bd_ip, 
+                bd_user,
+                password
+            );
+            result = true;
+        }
+        return result;
+    }
+
+    public Connection initConnection(){
+        Connection tempConn = null;
         try {
             if (validateId()) {   
                 ConfigReader cr = ConfigReader.getInstance();
                 String bd_ip = cr.getBdIp();
                 String bd_user = cr.getBdUser();
-                conn = DriverManager.getConnection(
+                String bd_pass = cr.getBdPassword();
+                tempConn = DriverManager.getConnection(
                     bd_ip, 
                     bd_user,
-                    password
+                    bd_pass
                 );
-                result = true;
             }
         } catch (SQLException|IOException e) {}
-        return result;
+        return tempConn;
     }
 
     private boolean validateId() {
