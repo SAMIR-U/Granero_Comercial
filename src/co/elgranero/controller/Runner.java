@@ -89,6 +89,7 @@ public class Runner {
                 return false;
             }
         }
+        //falta crear el primer usuario
         return true;
     }
 

@@ -6,6 +6,33 @@ public class App {
     }
 }
 /*
+String data = new String(Files.readAllBytes(Paths.get("sql/update/a.txt")));
+        String[] blocks = data.split("--");
+        int count = 1;
+        for (String block: blocks) {
+            if (!block.isBlank()) {
+                String[] sqls = block.split("\n");
+                StringBuilder sqlQuery = new StringBuilder();
+                String name = "";
+                
+                for (int i = 1; i < sqls.length; i++) {
+                    if (!block.isBlank()) {
+                        if (i==1)
+                            name = sqls[i].replace("UPDATE", "").trim();
+                        sqlQuery.append(sqls[i]);
+                        sqlQuery.append('\n');
+                    }
+                }
+                Path path = Paths.get("sql/update/"+name.toLowerCase()+".sql");
+                Files.createFile(path);
+                Files.writeString(path, sqlQuery);
+                count++;
+            }
+        }
+*/
+
+
+/*
 Gson gson = new Gson();
     try {
         Connection conn = DriverManager.getConnection(

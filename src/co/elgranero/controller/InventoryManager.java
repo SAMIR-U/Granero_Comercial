@@ -1,4 +1,4 @@
 package co.elgranero.controller;
-public class InventoryManager {
-
+public final class InventoryManager {
+    
 }
