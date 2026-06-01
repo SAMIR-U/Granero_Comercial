@@ -8,6 +8,7 @@ import java.util.List;
 
 import co.elgranero.controller.util.DatabaseUtils;
 import co.elgranero.net.BDConnection;
+import co.elgranero.persistence.ConfigReader;
 import co.elgranero.persistence.SqlInstructionsReader;
 import co.elgranero.persistence.TableConfig;
 import co.elgranero.view.Login;
@@ -98,7 +99,7 @@ public final class Runner {
     }
     
     
-    private boolean initTables(List<TableConfig> tablesConfig, Connection tempConn){
+    private boolean initTables(List<TableConfig> tablesConfig, Connection tempConn) throws SQLException, IOException{
         view.setStatus(2);
         for (TableConfig tc:tablesConfig) {
             try {
@@ -109,8 +110,16 @@ public final class Runner {
                 return false;
             }
         }
-        
+        createFirstUser(tempConn);
         return true;
+    }
+    
+    private void createFirstUser(Connection tempConn) throws SQLException, IOException{
+        String firstUserQuery = ConfigReader.getInstance().getFirstUser();        
+        DatabaseUtils.sendBDRequest(
+            tempConn,
+            DatabaseUtils.obtainPreparedStament(tempConn, firstUserQuery)
+        );
     }
 
 }
