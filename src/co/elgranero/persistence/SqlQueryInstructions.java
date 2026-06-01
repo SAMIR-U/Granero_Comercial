@@ -9,4 +9,5 @@ public class SqlQueryInstructions {
     public Map<String, String> creates;
     public Map<String, String> inserts;
     public Map<String, String> selects;
+    public Map<String, String> updates;
 }

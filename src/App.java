@@ -2,7 +2,7 @@ import co.elgranero.controller.Runner;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        (new Runner()).init();
+        Runner.getInstance().init();
     }
 }
 /*

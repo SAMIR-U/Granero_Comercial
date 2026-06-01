@@ -89,6 +89,22 @@
         "VENTAS_PRODUCTOS": "sql/inserts/ventas_productos.sql",
         "VENTAS": "sql/inserts/ventas.sql"
     },
+    "update": {
+        "CATEGORIAS_PRODUCTOS": "sql/update/categorias_productos.sql",
+        "CIUDADES": "sql/update/ciudades.sql",
+        "COMPRAS": "sql/update/compras.sql",
+        "FORMAS_PAGOS": "sql/update/formas_pagos.sql",
+        "PAISES": "sql/update/paises.sql",
+        "PERSONAS": "sql/update/personas.sql",
+        "PRESENTACIONES_PRODUCTOS": "sql/update/presentaciones_productos.sql",
+        "PRESENTACIONES": "sql/update/presentaciones.sql",
+        "PRODUCTOS_COMPRAS": "sql/update/productos_compras.sql",
+        "PRODUCTOS": "sql/update/productos.sql",
+        "PROVEEDORES": "sql/update/proveedores.sql",
+        "SUBCATEGORIAS_PRODUCTOS": "sql/update/subcategorias_productos.sql",
+        "VENTAS_PRODUCTOS": "sql/update/ventas_productos.sql",
+        "VENTAS": "sql/update/ventas.sql"
+    },
     "selects": {
         "COMPARE_SALES_OVER_TIME": "sql/selects/compare_sales_over_time.sql",
         "CUSTOMER_PURCHASE_HISTORY": "sql/selects/customer_purchase_history.sql",

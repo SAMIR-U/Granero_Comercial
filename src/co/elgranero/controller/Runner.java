@@ -13,16 +13,24 @@ import co.elgranero.persistence.TableConfig;
 import co.elgranero.view.Login;
 import co.elgranero.view.View;
 
-public class Runner {
+public final class Runner {
+    private static Runner runner;
     private View view;
     private int tries;
     private BDConnection bdConn;
     private SqlInstructionsReader sqlInstReader;
 
-    public Runner(){
+    private Runner(){
         this.view = new View();
         this.tries = 3;
         this.bdConn = BDConnection.getInstance();
+    }
+
+    public static Runner getInstance(){
+        if (runner==null) {
+            runner = new Runner();
+        }
+        return runner;
     }
 
     public void init(){
@@ -40,6 +48,18 @@ public class Runner {
             view.setStatus(0);
         } catch (IllegalStateException e){
             view.setStatus(e.getMessage());
+        }
+    }
+
+    public void fastInit(){
+        try {
+            if (login()) {
+                view.showMainMenu();
+            }else{
+                view.setStatus(4);
+            }
+        } catch (SQLException|IOException e) {
+            view.setStatus(0);
         }
     }
 
@@ -89,7 +109,7 @@ public class Runner {
                 return false;
             }
         }
-        //falta crear el primer usuario
+        
         return true;
     }
 
