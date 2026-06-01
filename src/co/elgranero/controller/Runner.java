@@ -6,8 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import co.elgranero.controller.util.BDConnection;
 import co.elgranero.controller.util.DatabaseUtils;
-import co.elgranero.net.BDConnection;
 import co.elgranero.persistence.ConfigReader;
 import co.elgranero.persistence.SqlInstructionsReader;
 import co.elgranero.persistence.TableConfig;

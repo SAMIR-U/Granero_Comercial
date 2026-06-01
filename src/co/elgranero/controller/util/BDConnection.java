@@ -1,4 +1,4 @@
-package co.elgranero.net;
+package co.elgranero.controller.util;
 
 import java.io.IOException;
 import java.sql.Connection;
