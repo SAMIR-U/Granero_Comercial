@@ -10,7 +10,6 @@ import co.elgranero.controller.util.BDConnection;
 import co.elgranero.controller.util.DatabaseUtils;
 import co.elgranero.persistence.ConfigReader;
 import co.elgranero.persistence.SqlInstructionsReader;
-import co.elgranero.persistence.TableConfig;
 import co.elgranero.view.Login;
 import co.elgranero.view.View;
 
@@ -36,7 +35,7 @@ public final class Runner {
 
     public void init(){
         try {
-            List<TableConfig> tablesConfig = sqlInstReader.getCreateTablesOrder();
+            List<String> tablesConfig = sqlInstReader.getCreateTablesOrder();
             Connection tempConn = BDConnection.getInstance().initConnection();
             checkTables(tablesConfig, tempConn);
             if (login()) {
@@ -81,13 +80,13 @@ public final class Runner {
         return result;
     }
 
-    private void checkTables(List<TableConfig> tablesConfig, Connection tempConn) throws SQLException, IOException, IllegalStateException{
+    private void checkTables(List<String> tablesConfig, Connection tempConn) throws SQLException, IOException, IllegalStateException{
         view.setStatus(1);
         int errCount = 0;
         
-        for (TableConfig tc:tablesConfig) {
+        for (String tc:tablesConfig) {
             try {
-                if (!DatabaseUtils.tableExist(tempConn, tc.table)) {
+                if (!DatabaseUtils.tableExist(tempConn, tc)) {
                     errCount++;
                 }
             } catch (SQLException e) {}
@@ -99,11 +98,11 @@ public final class Runner {
     }
     
     
-    private boolean initTables(List<TableConfig> tablesConfig, Connection tempConn) throws SQLException, IOException{
+    private boolean initTables(List<String> tablesConfig, Connection tempConn) throws SQLException, IOException{
         view.setStatus(2);
-        for (TableConfig tc:tablesConfig) {
+        for (String tc:tablesConfig) {
             try {
-                PreparedStatement pSt = sqlInstReader.getCreateQueryOf(tempConn, tc.table, "TABLE");
+                PreparedStatement pSt = sqlInstReader.getCreateQueryOf(tempConn, tc, "TABLE");
                 DatabaseUtils.sendBDRequest(tempConn, pSt);
             } catch (SQLException| IOException e) {
                 e.printStackTrace();

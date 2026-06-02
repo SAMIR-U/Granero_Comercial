@@ -15,10 +15,10 @@ public final class SqlInstructionsReader {
     private SqlQueryInstructions sqlQI;
 
     private SqlInstructionsReader()throws IOException{
-        readSqlCruds();
+        readSqlInstructions();
     }
 
-    private void readSqlCruds() throws IOException{
+    private void readSqlInstructions() throws IOException{
         try {
             String json = new String(
                 Files.readAllBytes(Paths.get("sql/paths.json"))
@@ -37,7 +37,7 @@ public final class SqlInstructionsReader {
         return sqlInstReader;
     }
 
-    public List<TableConfig> getCreateTablesOrder(){
+    public List<String> getCreateTablesOrder(){
         return sqlQI.create_tables_order;
     }
 
