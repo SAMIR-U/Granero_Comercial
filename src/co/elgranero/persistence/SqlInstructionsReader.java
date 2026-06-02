@@ -30,6 +30,11 @@ public final class SqlInstructionsReader {
         }
     }
 
+    //borrar este metodo
+    public SqlQueryInstructions getSqlQueryInstructions(){
+        return sqlQI;
+    }
+
     public static SqlInstructionsReader getInstance()throws IOException{
         if(sqlInstReader == null){
             sqlInstReader = new SqlInstructionsReader();
@@ -53,6 +58,11 @@ public final class SqlInstructionsReader {
     
     public PreparedStatement getConsultOf(Connection conn, String key) throws IOException, SQLException{
         String url = sqlQI.selects.get(key);
+        return obtainSQLQuery(conn, url);
+    }
+
+    public PreparedStatement getReportOf(Connection conn, String key) throws IOException, SQLException{
+        String url = sqlQI.reports.get(key);
         return obtainSQLQuery(conn, url);
     }
 

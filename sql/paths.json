@@ -1,61 +1,19 @@
 {
     "create_tables_order": [
-        {
-            "table": "PAISES",
-            "select": "SELECT * FROM PAISES;"
-        },
-        {
-            "table": "FORMAS_PAGOS",
-            "select": "SELECT * FROM FORMAS_PAGOS;"
-        },
-        {
-            "table": "PROVEEDORES",
-            "select": "SELECT * FROM PROVEEDORES;"
-        },
-        {
-            "table": "CATEGORIAS_PRODUCTOS",
-            "select": "SELECT * FROM CATEGORIAS_PRODUCTOS;"
-        },
-        {
-            "table": "PRESENTACIONES",
-            "select": "SELECT * FROM PRESENTACIONES;"
-        },
-        {
-            "table": "CIUDADES",
-            "select": "SELECT * FROM CIUDADES;"
-        },
-        {
-            "table": "SUBCATEGORIAS_PRODUCTOS",
-            "select": "SELECT * FROM SUBCATEGORIAS_PRODUCTOS;"
-        },
-        {
-            "table": "PERSONAS",
-            "select": "SELECT * FROM PERSONAS;"
-        },
-        {
-            "table": "PRODUCTOS",
-            "select": "SELECT * FROM PRODUCTOS;"
-        },
-        {
-            "table": "PRESENTACIONES_PRODUCTOS",
-            "select": "SELECT * FROM PRESENTACIONES_PRODUCTOS;"
-        },
-        {
-            "table": "COMPRAS",
-            "select": "SELECT * FROM COMPRAS;"
-        },
-        {
-            "table": "VENTAS",
-            "select": "SELECT * FROM VENTAS;"
-        },
-        {
-            "table": "PRODUCTOS_COMPRAS",
-            "select": "SELECT * FROM PRODUCTOS_COMPRAS;"
-        },
-        {
-            "table": "VENTAS_PRODUCTOS",
-            "select": "SELECT * FROM VENTAS_PRODUCTOS;"
-        }
+        "PAISES",
+        "FORMAS_PAGOS",
+        "PROVEEDORES",
+        "CATEGORIAS_PRODUCTOS",
+        "PRESENTACIONES",
+        "CIUDADES",
+        "SUBCATEGORIAS_PRODUCTOS",
+        "PERSONAS",
+        "PRODUCTOS",
+        "PRESENTACIONES_PRODUCTOS",
+        "COMPRAS",
+        "VENTAS",
+        "PRODUCTOS_COMPRAS",
+        "VENTAS_PRODUCTOS"
     ],
     "creates": {
         "TABLE_CATEGORIAS_PRODUCTOS": "sql/creates/table_categorias_productos.sql",
@@ -106,13 +64,29 @@
         "VENTAS": "sql/update/ventas.sql"
     },
     "selects": {
-        "COMPARE_SALES_OVER_TIME": "sql/selects/compare_sales_over_time.sql",
-        "CUSTOMER_PURCHASE_HISTORY": "sql/selects/customer_purchase_history.sql",
-        "CUSTOMER_PURCHASE_VOLUME": "sql/selects/customer_purchase_volume.sql",
-        "SALES_BY_CUSTOMER": "sql/selects/sales_by_customer.sql",
-        "SALES_BY_PRODUCT_CATEGORY": "sql/selects/sales_by_product_category.sql",
-        "SALES_BY_PRODUCT": "sql/selects/sales_by_product.sql",
-        "TOP_SELLING_PRODUCTS": "sql/selects/top_selling_products.sql",
-        "VALIDATE_SELLER_ID": "sql/selects/vendedor_id.sql"
+        "CATEGORIAS_PRODUCTOS": "sql/selects/categorias_productos.sql",
+        "CIUDADES": "sql/selects/ciudades.sql",
+        "COMPRAS": "sql/selects/compras.sql",
+        "FORMAS_PAGOS": "sql/selects/formas_pagos.sql",
+        "PAISES": "sql/selects/paises.sql",
+        "PERSONAS": "sql/selects/personas.sql",
+        "PRESENTACIONES_PRODUCTOS": "sql/selects/presentaciones_productos.sql",
+        "PRESENTACIONES": "sql/selects/presentaciones.sql",
+        "PRODUCTOS_COMPRAS": "sql/selects/productos_compras.sql",
+        "PRODUCTOS": "sql/selects/productos.sql",
+        "PROVEEDORES": "sql/selects/proveedores.sql",
+        "SUBCATEGORIAS_PRODUCTOS": "sql/selects/subcategorias_productos.sql",
+        "VENTAS_PRODUCTOS": "sql/selects/ventas_productos.sql",
+        "VENTAS": "sql/selects/ventas.sql" 
+    },
+    "reports":{
+        "COMPARE_SALES_OVER_TIME": "sql/reports/compare_sales_over_time.sql",
+        "CUSTOMER_PURCHASE_HISTORY": "sql/reports/customer_purchase_history.sql",
+        "CUSTOMER_PURCHASE_VOLUME": "sql/reports/customer_purchase_volume.sql",
+        "SALES_BY_CUSTOMER": "sql/reports/sales_by_customer.sql",
+        "SALES_BY_PRODUCT_CATEGORY": "sql/reports/sales_by_product_category.sql",
+        "SALES_BY_PRODUCT": "sql/reports/sales_by_product.sql",
+        "TOP_SELLING_PRODUCTS": "sql/reports/top_selling_products.sql",
+        "VALIDATE_SELLER_ID": "sql/reports/vendedor_id.sql"
     }
 }
