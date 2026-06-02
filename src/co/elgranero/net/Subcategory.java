@@ -1,23 +1,23 @@
 package co.elgranero.net;
 
-public class City {
+public class Subcategory {
     private int id;
-    private int countryId;
+    private int categoryId;
     private String name;
 
-    public City() {}
+    public Subcategory() {}
 
-    public City(int id, int countryId, String name) {
+    public Subcategory(int id, int categoryId, String name) {
         this.id = id;
-        this.countryId = countryId;
+        this.categoryId = categoryId;
         this.name = name;
     }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getCountryId() { return countryId; }
-    public void setCountryId(int countryId) { this.countryId = countryId; }
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

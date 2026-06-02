@@ -36,4 +36,14 @@ public class UserManager {
     public boolean modifyCity(int id, String cityName){   
         return false;
     }
+
+    public boolean deleteUser(int id){
+        return false;
+    }
+    public boolean deleteCountry(int id){
+        return false;
+    }
+    public boolean deleteCity(int id){   
+        return false;
+    }
 }

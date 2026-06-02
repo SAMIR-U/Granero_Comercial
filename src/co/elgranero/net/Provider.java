@@ -1,29 +1,22 @@
 package co.elgranero.net;
 
-public class User {
+public class Provider {
     private int id;
-    private int cityId;
     private String name;
     private String document;
     private String cellphone;
-    private String personType;
 
-    public User() {}
+    public Provider() {}
 
-    public User(int id, int cityId, String name, String document, String cellphone, String personType) {
+    public Provider(int id, String name, String document, String cellphone) {
         this.id = id;
-        this.cityId = cityId;
         this.name = name;
         this.document = document;
         this.cellphone = cellphone;
-        this.personType = personType;
     }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-
-    public int getCityId() { return cityId; }
-    public void setCityId(int cityId) { this.cityId = cityId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -33,7 +26,4 @@ public class User {
 
     public String getCellphone() { return cellphone; }
     public void setCellphone(String cellphone) { this.cellphone = cellphone; }
-
-    public String getPersonType() { return personType; }
-    public void setPersonType(String personType) { this.personType = personType; }
 }
