@@ -14,15 +14,14 @@ public final class SqlInstructionsReader {
     private static SqlInstructionsReader sqlInstReader;
     private SqlQueryInstructions sqlQI;
 
-    private SqlInstructionsReader()throws IOException{
+    private SqlInstructionsReader() throws IOException {
         readSqlInstructions();
     }
 
-    private void readSqlInstructions() throws IOException{
+    private void readSqlInstructions() throws IOException {
         try {
             String json = new String(
-                Files.readAllBytes(Paths.get("sql/paths.json"))
-            );
+                    Files.readAllBytes(Paths.get("sql/paths.json")));
             Gson gson = new Gson();
             this.sqlQI = gson.fromJson(json, SqlQueryInstructions.class);
         } catch (Exception e) {
@@ -30,54 +29,54 @@ public final class SqlInstructionsReader {
         }
     }
 
-    //borrar este metodo
-    public SqlQueryInstructions getSqlQueryInstructions(){
+    // borrar este metodo
+    public SqlQueryInstructions getSqlQueryInstructions() {
         return sqlQI;
     }
 
-    public static SqlInstructionsReader getInstance()throws IOException{
-        if(sqlInstReader == null){
+    public static SqlInstructionsReader getInstance() throws IOException {
+        if (sqlInstReader == null) {
             sqlInstReader = new SqlInstructionsReader();
         }
         return sqlInstReader;
     }
 
-    public List<String> getCreateTablesOrder(){
+    public List<String> getCreateTablesOrder() {
         return sqlQI.create_tables_order;
     }
 
-    public PreparedStatement getCreateQueryOf(Connection conn, String key, String objet) throws IOException, SQLException{
-        String url = sqlQI.creates.get((objet!=null)?objet.toUpperCase()+"_"+key:key);
+    public PreparedStatement getCreateTableQueryOf(Connection conn, String key)
+            throws IOException, SQLException {
+        String url = sqlQI.creates.get(key.toUpperCase());
         return obtainSQLQuery(conn, url);
     }
-    
-    public PreparedStatement getInsertsQueryOf(Connection conn, String key) throws IOException, SQLException{
+
+    public PreparedStatement getInsertsQueryOf(Connection conn, String key) throws IOException, SQLException {
         String url = sqlQI.inserts.get(key);
         return obtainSQLQuery(conn, url);
     }
 
-    public PreparedStatement getUpdateQueryOf(Connection conn, String key) throws IOException, SQLException{
+    public PreparedStatement getUpdateQueryOf(Connection conn, String key) throws IOException, SQLException {
         String url = sqlQI.updates.get(key);
         return obtainSQLQuery(conn, url);
     }
-    
-    public PreparedStatement getDeleteQueryOf(Connection conn, String key) throws IOException, SQLException{
+
+    public PreparedStatement getDeleteQueryOf(Connection conn, String key) throws IOException, SQLException {
         String url = sqlQI.deletes.get(key);
         return obtainSQLQuery(conn, url);
     }
 
-    public PreparedStatement getConsultOf(Connection conn, String key) throws IOException, SQLException{
+    public PreparedStatement getConsultOf(Connection conn, String key) throws IOException, SQLException {
         String url = sqlQI.selects.get(key);
         return obtainSQLQuery(conn, url);
     }
 
-
-    public PreparedStatement getReportOf(Connection conn, String key) throws IOException, SQLException{
+    public PreparedStatement getReportOf(Connection conn, String key) throws IOException, SQLException {
         String url = sqlQI.reports.get(key);
         return obtainSQLQuery(conn, url);
     }
 
-    private PreparedStatement obtainSQLQuery(Connection conn, String url) throws IOException, SQLException{
+    private PreparedStatement obtainSQLQuery(Connection conn, String url) throws IOException, SQLException {
         String sql = new String(Files.readAllBytes(Paths.get(url)));
         return conn.prepareStatement(sql);
     }
