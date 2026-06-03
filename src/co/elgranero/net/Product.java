@@ -1,19 +1,19 @@
 package co.elgranero.net;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Product {
     private Integer idProduct;
     private Integer idSubcategory;
     private String productName;
     private String productDescription;
-    private LocalDate productExpirationDate;
+    private Date productExpirationDate;
     private String subcategoryName; 
     private String categoryName;
     public Product() {
     }
     public Product(Integer idProduct, Integer idSubcategory, String productName, String productDescription,
-            LocalDate productExpirationDate, String subcategoryName, String categoryName) {
+            Date productExpirationDate, String subcategoryName, String categoryName) {
         this.idProduct = idProduct;
         this.idSubcategory = idSubcategory;
         this.productName = productName;
@@ -46,10 +46,10 @@ public class Product {
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
     }
-    public LocalDate getProductExpirationDate() {
+    public Date getProductExpirationDate() {
         return productExpirationDate;
     }
-    public void setProductExpirationDate(LocalDate productExpirationDate) {
+    public void setProductExpirationDate(Date productExpirationDate) {
         this.productExpirationDate = productExpirationDate;
     }
     public String getSubcategoryName() {

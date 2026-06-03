@@ -10,15 +10,14 @@ public final class ConfigReader {
     private static ConfigReader conReader;
     private Config config;
 
-    private ConfigReader() throws IOException{
+    private ConfigReader() throws IOException {
         readConfig();
     }
 
-    private void readConfig() throws IOException{
+    private void readConfig() throws IOException {
         try {
             String json = new String(
-                Files.readAllBytes(Paths.get("config.json"))
-            );
+                    Files.readAllBytes(Paths.get("config.json")));
             Gson gson = new Gson();
             this.config = gson.fromJson(json, Config.class);
         } catch (Exception e) {
@@ -26,23 +25,23 @@ public final class ConfigReader {
         }
     }
 
-    public String getBdIp() throws IOException{
+    public String getBdIp() throws IOException {
         return config.bdIp;
     }
 
-    public String getBdUser() throws IOException{
+    public String getBdUser() throws IOException {
         return config.bdUser;
     }
-    
-    public String getBdPassword(){
+
+    public String getBdPassword() {
         return config.bdPass;
     }
 
-    public String getFirstUser(){
-        return config.firstUser;
+    public String getFirstUser() {
+        return config.firstUserData;
     }
-    
-    public static ConfigReader getInstance() throws IOException{
+
+    public static ConfigReader getInstance() throws IOException {
         if (conReader == null) {
             conReader = new ConfigReader();
         }

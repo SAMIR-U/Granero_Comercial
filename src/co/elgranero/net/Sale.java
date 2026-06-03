@@ -1,17 +1,17 @@
 package co.elgranero.net;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Sale {
     private Integer idSale;
     private Integer idPaymentMethod;
     private Integer idClient;
-    private LocalDate saleDate;
+    private Date saleDate;
     private Double saleDiscount;
     private Integer productsCount;
     public Sale() {
     }
-    public Sale(Integer idSale, Integer idPaymentMethod, Integer idClient, LocalDate saleDate, Double saleDiscount,
+    public Sale(Integer idSale, Integer idPaymentMethod, Integer idClient, Date saleDate, Double saleDiscount,
             Integer productsCount) {
         this.idSale = idSale;
         this.idPaymentMethod = idPaymentMethod;
@@ -38,10 +38,10 @@ public class Sale {
     public void setIdClient(Integer idClient) {
         this.idClient = idClient;
     }
-    public LocalDate getSaleDate() {
+    public Date getSaleDate() {
         return saleDate;
     }
-    public void setSaleDate(LocalDate saleDate) {
+    public void setSaleDate(Date saleDate) {
         this.saleDate = saleDate;
     }
     public Double getSaleDiscount() {
