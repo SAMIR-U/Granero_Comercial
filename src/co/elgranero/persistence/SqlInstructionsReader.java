@@ -55,6 +55,11 @@ public final class SqlInstructionsReader {
         String url = sqlQI.inserts.get(key);
         return obtainSQLQuery(conn, url);
     }
+
+    public PreparedStatement getUpdateQueryOf(Connection conn, String key) throws IOException, SQLException{
+        String url = sqlQI.updates.get(key);
+        return obtainSQLQuery(conn, url);
+    }
     
     public PreparedStatement getConsultOf(Connection conn, String key) throws IOException, SQLException{
         String url = sqlQI.selects.get(key);
