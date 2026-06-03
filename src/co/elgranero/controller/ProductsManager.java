@@ -2,15 +2,21 @@ package co.elgranero.controller;
 
 import co.elgranero.net.Product;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import co.elgranero.net.Category;
 import co.elgranero.net.Subcategory;
+import co.elgranero.persistence.SqlInstructionsReader;
 import co.elgranero.net.Presentation;
 import co.elgranero.net.ProductPresentation;
 
 public class ProductsManager {
-    // --- CATEGORIAS ---
+    private SqlInstructionsReader sir;
+    public ProductsManager() throws IOException{
+        this.sir = SqlInstructionsReader.getInstance();
+    }
+    
     public boolean registCategory(String categoryName) {
         return false;
     }

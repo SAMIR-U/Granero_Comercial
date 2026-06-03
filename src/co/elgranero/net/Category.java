@@ -1,19 +1,25 @@
 package co.elgranero.net;
 
 public class Category {
-    private int id;
-    private String name;
-
-    public Category() {}
-
-    public Category(int id, String name) {
-        this.id = id;
-        this.name = name;
+    private Integer idCategory;
+    private String categoryName;
+    public Category() {
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public Category(Integer idCategory, String categoryName) {
+        this.idCategory = idCategory;
+        this.categoryName = categoryName;
+    }
+    public Integer getIdCategory() {
+        return idCategory;
+    }
+    public void setIdCategory(Integer idCategory) {
+        this.idCategory = idCategory;
+    }
+    public String getCategoryName() {
+        return categoryName;
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+    
 }

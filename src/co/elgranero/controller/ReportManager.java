@@ -1,15 +1,19 @@
 package co.elgranero.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import co.elgranero.net.User;
 import co.elgranero.net.reports.*;
+import co.elgranero.persistence.SqlInstructionsReader;
 
 public class ReportManager {
-    public ArrayList<SalesComparison> compareSalesOverTime(
-        String period1Start, String period1End, 
-        String period2Start, String period2End
-    ) {
+    private SqlInstructionsReader sir;
+    public ReportManager() throws IOException{
+        this.sir = SqlInstructionsReader.getInstance();
+    }
+
+    public ArrayList<SalesComparison> compareSalesOverTime(String period1Start, String period1End, String period2Start, String period2End) {
         return null;
     }
 

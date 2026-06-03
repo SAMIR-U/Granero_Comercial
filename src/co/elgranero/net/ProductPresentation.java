@@ -1,24 +1,42 @@
 package co.elgranero.net;
 
 public class ProductPresentation {
-    private int presentationId;
-    private int productId;
-    private double price;
-
-    public ProductPresentation() {}
-
-    public ProductPresentation(int presentationId, int productId, double price) {
-        this.presentationId = presentationId;
-        this.productId = productId;
-        this.price = price;
+    private Integer idPresentation;
+    private Integer idProduct;
+    private Double presentationPrice;
+    private String presentationName;
+    public ProductPresentation() {
     }
-
-    public int getPresentationId() { return presentationId; }
-    public void setPresentationId(int presentationId) { this.presentationId = presentationId; }
-
-    public int getProductId() { return productId; }
-    public void setProductId(int productId) { this.productId = productId; }
-
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public ProductPresentation(Integer idPresentation, Integer idProduct, Double presentationPrice,
+            String presentationName) {
+        this.idPresentation = idPresentation;
+        this.idProduct = idProduct;
+        this.presentationPrice = presentationPrice;
+        this.presentationName = presentationName;
+    }
+    public Integer getIdPresentation() {
+        return idPresentation;
+    }
+    public void setIdPresentation(Integer idPresentation) {
+        this.idPresentation = idPresentation;
+    }
+    public Integer getIdProduct() {
+        return idProduct;
+    }
+    public void setIdProduct(Integer idProduct) {
+        this.idProduct = idProduct;
+    }
+    public Double getPresentationPrice() {
+        return presentationPrice;
+    }
+    public void setPresentationPrice(Double presentationPrice) {
+        this.presentationPrice = presentationPrice;
+    }
+    public String getPresentationName() {
+        return presentationName;
+    }
+    public void setPresentationName(String presentationName) {
+        this.presentationName = presentationName;
+    }
+    
 }

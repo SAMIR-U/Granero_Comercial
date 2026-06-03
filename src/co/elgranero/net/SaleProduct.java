@@ -1,29 +1,49 @@
 package co.elgranero.net;
 
 public class SaleProduct {
-    private int saleId;
-    private int productId;
-    private int quantity;
-    private double unitPrice;
-
-    public SaleProduct() {}
-
-    public SaleProduct(int saleId, int productId, int quantity, double unitPrice) {
-        this.saleId = saleId;
-        this.productId = productId;
+    private Integer idSale;
+    private Integer idProduct;
+    private Integer quantity;
+    private Double unitPrice;
+    private String productName;
+    public SaleProduct() {
+    }
+    public SaleProduct(Integer idSale, Integer idProduct, Integer quantity, Double unitPrice, String productName) {
+        this.idSale = idSale;
+        this.idProduct = idProduct;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.productName = productName;
     }
-
-    public int getSaleId() { return saleId; }
-    public void setSaleId(int saleId) { this.saleId = saleId; }
-
-    public int getProductId() { return productId; }
-    public void setProductId(int productId) { this.productId = productId; }
-
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    public double getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+    public Integer getIdSale() {
+        return idSale;
+    }
+    public void setIdSale(Integer idSale) {
+        this.idSale = idSale;
+    }
+    public Integer getIdProduct() {
+        return idProduct;
+    }
+    public void setIdProduct(Integer idProduct) {
+        this.idProduct = idProduct;
+    }
+    public Integer getQuantity() {
+        return quantity;
+    }
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+    public void setUnitPrice(Double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+    public String getProductName() {
+        return productName;
+    }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    
 }

@@ -1,34 +1,68 @@
 package co.elgranero.net;
 
+import java.time.LocalDate;
+
 public class Product {
-    private int id;
-    private int subcategoryId;
-    private String name;
-    private String description;
-    private String expirationDate;
-
-    public Product() {}
-
-    public Product(int id, int subcategoryId, String name, String description, String expirationDate) {
-        this.id = id;
-        this.subcategoryId = subcategoryId;
-        this.name = name;
-        this.description = description;
-        this.expirationDate = expirationDate;
+    private Integer idProduct;
+    private Integer idSubcategory;
+    private String productName;
+    private String productDescription;
+    private LocalDate productExpirationDate;
+    private String subcategoryName; 
+    private String categoryName;
+    public Product() {
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public int getSubcategoryId() { return subcategoryId; }
-    public void setSubcategoryId(int subcategoryId) { this.subcategoryId = subcategoryId; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getExpirationDate() { return expirationDate; }
-    public void setExpirationDate(String expirationDate) { this.expirationDate = expirationDate; }
+    public Product(Integer idProduct, Integer idSubcategory, String productName, String productDescription,
+            LocalDate productExpirationDate, String subcategoryName, String categoryName) {
+        this.idProduct = idProduct;
+        this.idSubcategory = idSubcategory;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productExpirationDate = productExpirationDate;
+        this.subcategoryName = subcategoryName;
+        this.categoryName = categoryName;
+    }
+    public Integer getIdProduct() {
+        return idProduct;
+    }
+    public void setIdProduct(Integer idProduct) {
+        this.idProduct = idProduct;
+    }
+    public Integer getIdSubcategory() {
+        return idSubcategory;
+    }
+    public void setIdSubcategory(Integer idSubcategory) {
+        this.idSubcategory = idSubcategory;
+    }
+    public String getProductName() {
+        return productName;
+    }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+    public String getProductDescription() {
+        return productDescription;
+    }
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+    public LocalDate getProductExpirationDate() {
+        return productExpirationDate;
+    }
+    public void setProductExpirationDate(LocalDate productExpirationDate) {
+        this.productExpirationDate = productExpirationDate;
+    }
+    public String getSubcategoryName() {
+        return subcategoryName;
+    }
+    public void setSubcategoryName(String subcategoryName) {
+        this.subcategoryName = subcategoryName;
+    }
+    public String getCategoryName() {
+        return categoryName;
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+    
 }

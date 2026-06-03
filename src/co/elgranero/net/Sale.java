@@ -1,34 +1,60 @@
 package co.elgranero.net;
 
+import java.time.LocalDate;
+
 public class Sale {
-    private int id;
-    private int paymentMethodId;
-    private int clientId;
-    private String saleDate;
-    private double discount;
-
-    public Sale() {}
-
-    public Sale(int id, int paymentMethodId, int clientId, String saleDate, double discount) {
-        this.id = id;
-        this.paymentMethodId = paymentMethodId;
-        this.clientId = clientId;
-        this.saleDate = saleDate;
-        this.discount = discount;
+    private Integer idSale;
+    private Integer idPaymentMethod;
+    private Integer idClient;
+    private LocalDate saleDate;
+    private Double saleDiscount;
+    private Integer productsCount;
+    public Sale() {
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public int getPaymentMethodId() { return paymentMethodId; }
-    public void setPaymentMethodId(int paymentMethodId) { this.paymentMethodId = paymentMethodId; }
-
-    public int getClientId() { return clientId; }
-    public void setClientId(int clientId) { this.clientId = clientId; }
-
-    public String getSaleDate() { return saleDate; }
-    public void setSaleDate(String saleDate) { this.saleDate = saleDate; }
-
-    public double getDiscount() { return discount; }
-    public void setDiscount(double discount) { this.discount = discount; }
+    public Sale(Integer idSale, Integer idPaymentMethod, Integer idClient, LocalDate saleDate, Double saleDiscount,
+            Integer productsCount) {
+        this.idSale = idSale;
+        this.idPaymentMethod = idPaymentMethod;
+        this.idClient = idClient;
+        this.saleDate = saleDate;
+        this.saleDiscount = saleDiscount;
+        this.productsCount = productsCount;
+    }
+    public Integer getIdSale() {
+        return idSale;
+    }
+    public void setIdSale(Integer idSale) {
+        this.idSale = idSale;
+    }
+    public Integer getIdPaymentMethod() {
+        return idPaymentMethod;
+    }
+    public void setIdPaymentMethod(Integer idPaymentMethod) {
+        this.idPaymentMethod = idPaymentMethod;
+    }
+    public Integer getIdClient() {
+        return idClient;
+    }
+    public void setIdClient(Integer idClient) {
+        this.idClient = idClient;
+    }
+    public LocalDate getSaleDate() {
+        return saleDate;
+    }
+    public void setSaleDate(LocalDate saleDate) {
+        this.saleDate = saleDate;
+    }
+    public Double getSaleDiscount() {
+        return saleDiscount;
+    }
+    public void setSaleDiscount(Double saleDiscount) {
+        this.saleDiscount = saleDiscount;
+    }
+    public Integer getProductsCount() {
+        return productsCount;
+    }
+    public void setProductsCount(Integer productsCount) {
+        this.productsCount = productsCount;
+    }
+    
 }

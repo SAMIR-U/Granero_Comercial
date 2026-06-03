@@ -1,19 +1,25 @@
 package co.elgranero.net;
 
 public class PaymentMethod {
-    private int id;
-    private String name;
-
-    public PaymentMethod() {}
-
-    public PaymentMethod(int id, String name) {
-        this.id = id;
-        this.name = name;
+    private Integer idPaymentMethod;
+    private String paymentMethodName;
+    public PaymentMethod() {
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public PaymentMethod(Integer idPaymentMethod, String paymentMethodName) {
+        this.idPaymentMethod = idPaymentMethod;
+        this.paymentMethodName = paymentMethodName;
+    }
+    public Integer getIdPaymentMethod() {
+        return idPaymentMethod;
+    }
+    public void setIdPaymentMethod(Integer idPaymentMethod) {
+        this.idPaymentMethod = idPaymentMethod;
+    }
+    public String getPaymentMethodName() {
+        return paymentMethodName;
+    }
+    public void setPaymentMethodName(String paymentMethodName) {
+        this.paymentMethodName = paymentMethodName;
+    }
+    
 }

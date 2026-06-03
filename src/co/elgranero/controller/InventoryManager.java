@@ -1,12 +1,19 @@
 package co.elgranero.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import co.elgranero.net.Provider;
 import co.elgranero.net.Purchase;
 import co.elgranero.net.PurchaseProduct;
+import co.elgranero.persistence.SqlInstructionsReader;
 
 public final class InventoryManager {
+    private SqlInstructionsReader sir;
+    public InventoryManager() throws IOException{
+        this.sir = SqlInstructionsReader.getInstance();
+    }
+
     public boolean registProvider(String name, String document, String cellphone) {
         return false;
     }
@@ -36,8 +43,6 @@ public final class InventoryManager {
     public boolean modifyPurchaseProduct(PurchaseProduct purchaseProduct) {
         return false;
     }
-    
-    
     
     public boolean deleteProvider(int id) {
         return false;

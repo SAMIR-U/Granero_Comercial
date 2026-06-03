@@ -1,11 +1,18 @@
 package co.elgranero.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import co.elgranero.net.PaymentMethod;
 import co.elgranero.net.Sale;
 import co.elgranero.net.SaleProduct;
+import co.elgranero.persistence.SqlInstructionsReader;
 
 public class SaleManager {
+    private SqlInstructionsReader sir;
+    public SaleManager() throws IOException{
+        this.sir = SqlInstructionsReader.getInstance();
+    }
+
     public boolean registPaymentMethod(String paymentMethodName) {
         return false;
     }

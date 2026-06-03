@@ -1,24 +1,45 @@
 package co.elgranero.net;
 
 public class City {
-    private int id;
-    private int countryId;
-    private String name;
-
-    public City() {}
-
-    public City(int id, int countryId, String name) {
-        this.id = id;
-        this.countryId = countryId;
-        this.name = name;
+    private Integer idCity;
+    private Integer idCountry;
+    private String cityName;
+    private String countryName;
+    
+    public City() {
     }
+    public City(Integer idCity, Integer idCountry, String cityName, String countryName) {
+        this.idCity = idCity;
+        this.idCountry = idCountry;
+        this.cityName = cityName;
+        this.countryName = countryName;
+    }
+    public Integer getIdCity() {
+        return idCity;
+    }
+    public void setIdCity(Integer idCity) {
+        this.idCity = idCity;
+    }
+    public Integer getIdCountry() {
+        return idCountry;
+    }
+    public void setIdCountry(Integer idCountry) {
+        this.idCountry = idCountry;
+    }
+    public String getCityName() {
+        return cityName;
+    }
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+    public String getCountryName() {
+        return countryName;
+    }
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+    
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    
 
-    public int getCountryId() { return countryId; }
-    public void setCountryId(int countryId) { this.countryId = countryId; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
 }
