@@ -1,23 +1,30 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import co.elgranero.controller.UserManager;
+import co.elgranero.net.City;
+import co.elgranero.net.Country;
+import co.elgranero.net.User;
 
 public class PanelPersons extends PanelBase {
 
     private JTextField txtName, txtDocument, txtPhone;
     private JComboBox<Object> cboCity, cboType;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
 
-    private final String[] CITIES = { "Tunja", "Bogotá", "Medellín", "Cali", "Bucaramanga", "Barranquilla" };
-    private final String[] TYPES = { "NATURAL", "JURIDICA" };
+    private UserManager userManager;
 
     public PanelPersons() {
         super("👤  Gestión de Personas / Clientes",
                 new String[] { "ID", "Nombre", "Documento", "Teléfono", "Tipo", "Ciudad" });
+        try {
+            this.userManager = new UserManager();
+        } catch (IOException e) {
+            showError("Error de conexión: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -27,20 +34,42 @@ public class PanelPersons extends PanelBase {
         txtName = addField("Nombre Completo *");
         txtDocument = addField("Documento / CC *");
         txtPhone = addField("Teléfono");
+
         cboType = addCombo("Tipo de Persona *");
-        for (String t : TYPES)
-            cboType.addItem(t);
+        cboType.addItem("CLIENTE");
+        cboType.addItem("VENDEDOR");
+
         cboCity = addCombo("Ciudad *");
-        for (String c : CITIES)
-            cboCity.addItem(c);
+        if (userManager != null) {
+            ArrayList<Country> countries = userManager.obtainCountries();
+            for (Country country : countries) {
+                ArrayList<City> cities = userManager.obtainCities(country.getId());
+                for (City city : cities) {
+                    cboCity.addItem(city);
+                }
+            }
+        }
+
         formPanel.add(Box.createVerticalGlue());
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (userManager == null)
+            return;
+
+        ArrayList<User> users = userManager.obtainUsers();
+        for (User u : users) {
+            tableModel.addRow(new Object[] {
+                    u.getIdUser(),
+                    u.getUserName(),
+                    u.getUserDocument(),
+                    u.getUserPhone(),
+                    u.getPersonType(),
+                    u.getCityName()
+            });
+        }
     }
 
     @Override
@@ -49,8 +78,27 @@ public class PanelPersons extends PanelBase {
         txtName.setText((String) tableModel.getValueAt(row, 1));
         txtDocument.setText((String) tableModel.getValueAt(row, 2));
         txtPhone.setText((String) tableModel.getValueAt(row, 3));
-        cboType.setSelectedItem(tableModel.getValueAt(row, 4));
-        cboCity.setSelectedItem(tableModel.getValueAt(row, 5));
+
+        String type = (String) tableModel.getValueAt(row, 4);
+        if (type != null) {
+            for (int i = 0; i < cboType.getItemCount(); i++) {
+                if (cboType.getItemAt(i).toString().equalsIgnoreCase(type)) {
+                    cboType.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
+        String cityName = (String) tableModel.getValueAt(row, 5);
+        if (cityName != null) {
+            for (int i = 0; i < cboCity.getItemCount(); i++) {
+                City c = (City) cboCity.getItemAt(i);
+                if (c.getCityName().equalsIgnoreCase(cityName)) {
+                    cboCity.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -59,43 +107,78 @@ public class PanelPersons extends PanelBase {
         txtName.setText("");
         txtDocument.setText("");
         txtPhone.setText("");
-        if (cboType.getItemCount() > 0)
+        if (cboType.getItemCount() > 0) {
             cboType.setSelectedIndex(0);
-        if (cboCity.getItemCount() > 0)
+        }
+        if (cboCity.getItemCount() > 0) {
             cboCity.setSelectedIndex(0);
+        }
     }
 
     @Override
     protected void actionSave() {
-        String name = txtName.getText().trim(), doc = txtDocument.getText().trim();
-        if (name.isEmpty() || doc.isEmpty()) {
-            showError("Nombre y Documento son obligatorios.");
+        String name = txtName.getText().trim();
+        String doc = txtDocument.getText().trim();
+        String phone = txtPhone.getText().trim();
+        City selectedCity = (City) cboCity.getSelectedItem();
+        int personTypeIndex = cboType.getSelectedIndex();
+
+        if (name.isEmpty() || doc.isEmpty() || selectedCity == null || personTypeIndex < 0) {
+            showError("Nombre, Documento, Tipo y Ciudad son obligatorios.");
             return;
         }
-        Object[] row = { selectedId == -1 ? nextId++ : selectedId, name, doc,
-                txtPhone.getText().trim(), cboType.getSelectedItem(), cboCity.getSelectedItem() };
-        if (selectedId == -1)
-            data.add(row);
-        else
-            for (int i = 0; i < data.size(); i++)
-                if ((int) data.get(i)[0] == selectedId) {
-                    data.set(i, row);
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        try {
+            int docInt = Integer.parseInt(doc);
+            boolean exito;
+
+            if (selectedId == -1) {
+                exito = userManager.registUser(selectedCity.getIdCity(), name, docInt, phone, personTypeIndex);
+            } else {
+                User u = new User(
+                        selectedId,
+                        selectedCity.getIdCity(),
+                        name,
+                        doc,
+                        phone,
+                        cboType.getSelectedItem().toString(),
+                        selectedCity.getCityName(),
+                        selectedCity.getCountryName());
+                exito = userManager.modifyUser(u);
+            }
+
+            if (exito) {
+                loadData();
+                setInitialState();
+                clearForm();
+                JOptionPane.showMessageDialog(this, "Persona guardada correctamente.");
+            } else {
+                showError("Error al guardar la persona en la base de datos.");
+            }
+
+        } catch (NumberFormatException ex) {
+            showError("El documento debe ser un valor numérico válido.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0 || selectedId == -1) {
+            showError("Seleccione una persona de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar esta persona?"))
+        }
+        if (!confirm("¿Realmente desea eliminar esta persona?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = userManager.deleteUser(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Persona eliminada correctamente.");
+        } else {
+            showError("Error al eliminar la persona.");
+        }
     }
 }

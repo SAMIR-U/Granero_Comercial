@@ -1,18 +1,24 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import co.elgranero.controller.ProductsManager;
+import co.elgranero.net.Presentation;
 
 public class PanelPresentations extends PanelBase {
 
     private JTextField txtName;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
+    private ProductsManager productsManager;
 
     public PanelPresentations() {
         super("🏷  Gestión de Presentaciones", new String[] { "ID", "Presentación" });
+        try {
+            this.productsManager = new ProductsManager();
+        } catch (IOException e) {
+            showError("No se pudo conectar con el gestor de productos: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -26,8 +32,17 @@ public class PanelPresentations extends PanelBase {
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (productsManager == null)
+            return;
+
+        ArrayList<Presentation> presentaciones = productsManager.obtainPresentations();
+        for (Presentation p : presentaciones) {
+            Object[] row = {
+                    p.getId(),
+                    p.getName()
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
@@ -45,32 +60,48 @@ public class PanelPresentations extends PanelBase {
     @Override
     protected void actionSave() {
         String name = txtName.getText().trim();
+
         if (name.isEmpty()) {
             showError("El nombre es obligatorio.");
             return;
         }
-        if (selectedId == -1)
-            data.add(new Object[] { nextId++, name });
-        else
-            for (Object[] r : data)
-                if ((int) r[0] == selectedId) {
-                    r[1] = name;
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean exito;
+        if (selectedId == -1) {
+            exito = productsManager.registPresentation(name);
+        } else {
+            Presentation preModificada = new Presentation(selectedId, name);
+            exito = productsManager.modifyPresentation(preModificada);
+        }
+
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "¡Presentación guardada exitosamente!");
+        } else {
+            showError("Hubo un error al guardar la presentación en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione una presentación de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar esta presentación?"))
+        }
+        if (!confirm("¿Realmente desea eliminar esta presentación?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = productsManager.deletePresentation(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Presentación eliminada correctamente.");
+        } else {
+            showError("No se pudo eliminar la presentación de la base de datos.");
+        }
     }
 }

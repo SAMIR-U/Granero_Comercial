@@ -1,24 +1,39 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+
+import co.elgranero.controller.SaleManager;
+import co.elgranero.controller.UserManager;
+import co.elgranero.net.Sale;
+import co.elgranero.net.PaymentMethod;
+import co.elgranero.net.User;
 
 public class PanelSales extends PanelBase {
 
     private JComboBox<Object> cboCustomer, cboPaymentMethod;
     private JTextField txtDate, txtDiscount;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
 
-    private final String[] CUSTOMERS = { "Juan Pérez", "María López", "Carlos Gómez", "Ana Torres", "Luis Martínez" };
-    private final String[] PAYMENT_METHODS = { "Efectivo", "Transferencia", "Tarjeta Débito", "Tarjeta Crédito",
-            "Fiado" };
+    private SaleManager saleManager;
+    private UserManager userManager;
+
+    private ArrayList<User> customerList;
+    private ArrayList<PaymentMethod> paymentMethodList;
 
     public PanelSales() {
         super("💰  Gestión de Ventas",
-                new String[] { "ID", "Cliente", "Forma de Pago", "Fecha", "Descuento" });
+                new String[] { "ID", "ID Pago", "ID Cliente", "Fecha", "Descuento", "Cant. Productos" });
+        try {
+            this.saleManager = new SaleManager();
+            this.userManager = new UserManager();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         initialize();
     }
 
@@ -27,28 +42,79 @@ public class PanelSales extends PanelBase {
         addFormTitle("Datos de la Venta");
         cboCustomer = addCombo("Cliente *");
         cboPaymentMethod = addCombo("Forma de Pago *");
-        txtDate = addField("Fecha (dd/MM/yyyy) *");
+        txtDate = addField("Fecha (yyyy-MM-dd) *");
         txtDiscount = addField("Descuento (%) — opcional");
-        for (String c : CUSTOMERS)
-            cboCustomer.addItem(c);
-        for (String p : PAYMENT_METHODS)
-            cboPaymentMethod.addItem(p);
+
+        try {
+            if (userManager == null) {
+                this.userManager = new UserManager();
+            }
+
+            ArrayList<User> allUsers = userManager.obtainUsers();
+            customerList = new ArrayList<>();
+
+            for (User u : allUsers) {
+                if ("CLIENTE".equals(u.getPersonType())) {
+                    customerList.add(u);
+                    cboCustomer.addItem(u.getUserName());
+                }
+            }
+
+            if (saleManager == null) {
+                this.saleManager = new SaleManager();
+            }
+            paymentMethodList = saleManager.obtainPaymentMethods();
+            for (PaymentMethod p : paymentMethodList) {
+                cboPaymentMethod.addItem(p.getPaymentMethodName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         formPanel.add(Box.createVerticalGlue());
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (saleManager == null)
+            return;
+
+        ArrayList<Sale> sales = saleManager.obtainSales();
+        for (Sale s : sales) {
+            tableModel.addRow(new Object[] {
+                    s.getIdSale(),
+                    s.getIdPaymentMethod(),
+                    s.getIdClient(),
+                    s.getSaleDate(),
+                    s.getSaleDiscount(),
+                    s.getProductsCount()
+            });
+        }
     }
 
     @Override
     protected void loadIntoForm(int row) {
         selectedId = (int) tableModel.getValueAt(row, 0);
-        cboCustomer.setSelectedItem(tableModel.getValueAt(row, 1));
-        cboPaymentMethod.setSelectedItem(tableModel.getValueAt(row, 2));
-        txtDate.setText((String) tableModel.getValueAt(row, 3));
+
+        int idPaymentMethod = (int) tableModel.getValueAt(row, 1);
+        int idClient = (int) tableModel.getValueAt(row, 2);
+
+        for (int i = 0; i < customerList.size(); i++) {
+            if (customerList.get(i).getIdUser() == idClient) {
+                cboCustomer.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < paymentMethodList.size(); i++) {
+            if (paymentMethodList.get(i).getIdPaymentMethod() == idPaymentMethod) {
+                cboPaymentMethod.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        txtDate.setText(String.valueOf(tableModel.getValueAt(row, 3)));
         txtDiscount.setText(String.valueOf(tableModel.getValueAt(row, 4)));
     }
 
@@ -65,29 +131,52 @@ public class PanelSales extends PanelBase {
 
     @Override
     protected void actionSave() {
-        String date = txtDate.getText().trim();
-        if (date.isEmpty() || cboCustomer.getSelectedItem() == null) {
-            showError("Cliente y Fecha son obligatorios.");
+        String dateStr = txtDate.getText().trim();
+        if (dateStr.isEmpty() || cboCustomer.getSelectedItem() == null || cboPaymentMethod.getSelectedItem() == null) {
+            showError("Cliente, Forma de Pago y Fecha son obligatorios.");
             return;
         }
+
         try {
             String discountStr = txtDiscount.getText().trim();
             double discount = discountStr.isEmpty() ? 0.0 : Double.parseDouble(discountStr);
-            Object[] row = { selectedId == -1 ? nextId++ : selectedId,
-                    cboCustomer.getSelectedItem(), cboPaymentMethod.getSelectedItem(), date, discount };
-            if (selectedId == -1)
-                data.add(row);
-            else
-                for (int i = 0; i < data.size(); i++)
-                    if ((int) data.get(i)[0] == selectedId) {
-                        data.set(i, row);
-                        break;
-                    }
-            loadData();
-            setInitialState();
-            clearForm();
+
+            int customerIdx = cboCustomer.getSelectedIndex();
+            int paymentIdx = cboPaymentMethod.getSelectedIndex();
+
+            int idClient = customerList.get(customerIdx).getIdUser();
+            int idPaymentMethod = paymentMethodList.get(paymentIdx).getIdPaymentMethod();
+
+            boolean success;
+            if (selectedId == -1) {
+                success = saleManager.registSale(idPaymentMethod, idClient, dateStr, discount);
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date parsedDate = sdf.parse(dateStr);
+                Date sqlDate = new Date(parsedDate.getTime());
+
+                Sale saleToUpdate = new Sale();
+                saleToUpdate.setIdSale(selectedId);
+                saleToUpdate.setIdPaymentMethod(idPaymentMethod);
+                saleToUpdate.setIdClient(idClient);
+                saleToUpdate.setSaleDate(sqlDate);
+                saleToUpdate.setSaleDiscount(discount);
+
+                success = saleManager.modifySale(saleToUpdate);
+            }
+
+            if (success) {
+                loadData();
+                setInitialState();
+                clearForm();
+            } else {
+                showError("No se pudo guardar la venta en la base de datos.");
+            }
+
         } catch (NumberFormatException e) {
             showError("El descuento debe ser un número válido.");
+        } catch (ParseException e) {
+            showError("La fecha debe tener el formato válido (yyyy-MM-dd).");
         }
     }
 
@@ -97,9 +186,14 @@ public class PanelSales extends PanelBase {
             return;
         if (!confirm("¿Eliminar esta venta?"))
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean success = saleManager.deleteSale(selectedId);
+        if (success) {
+            loadData();
+            setInitialState();
+            clearForm();
+        } else {
+            showError("No se pudo eliminar la venta.");
+        }
     }
 }

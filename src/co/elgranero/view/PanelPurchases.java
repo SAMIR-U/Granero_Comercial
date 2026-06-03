@@ -1,24 +1,37 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+
+import co.elgranero.controller.InventoryManager;
+import co.elgranero.controller.SaleManager;
+import co.elgranero.net.PaymentMethod;
+import co.elgranero.net.Provider;
+import co.elgranero.net.Purchase;
 
 public class PanelPurchases extends PanelBase {
 
     private JComboBox<Object> cboSupplier, cboPaymentMethod;
     private JTextField txtDate;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
 
-    private final String[] SUPPLIERS = { "Distribuidora Alimentos SAS", "Lácteos del Norte", "Carnes Finas Ltda",
-            "Bebidas Andinas" };
-    private final String[] PAYMENT_METHODS = { "Efectivo", "Transferencia", "Cheque", "Crédito 30 días" };
+    private InventoryManager inventoryManager;
+    private SaleManager saleManager;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public PanelPurchases() {
         super("🛒  Gestión de Compras",
                 new String[] { "ID", "Proveedor", "Forma de Pago", "Fecha" });
+        try {
+            this.inventoryManager = new InventoryManager();
+            this.saleManager = new SaleManager();
+        } catch (IOException e) {
+            showError("Error al conectar con los controladores: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -28,26 +41,76 @@ public class PanelPurchases extends PanelBase {
         cboSupplier = addCombo("Proveedor *");
         cboPaymentMethod = addCombo("Forma de Pago *");
         txtDate = addField("Fecha (dd/MM/yyyy) *");
-        for (String s : SUPPLIERS)
-            cboSupplier.addItem(s);
-        for (String p : PAYMENT_METHODS)
-            cboPaymentMethod.addItem(p);
+
+        cargarCombos();
+
         formPanel.add(Box.createVerticalGlue());
+    }
+
+    private void cargarCombos() {
+        if (inventoryManager != null) {
+            cboSupplier.removeAllItems();
+            ArrayList<Provider> proveedores = inventoryManager.obtainProviders();
+            for (Provider p : proveedores) {
+                cboSupplier.addItem(p);
+            }
+        }
+
+        if (saleManager != null) {
+            cboPaymentMethod.removeAllItems();
+            ArrayList<PaymentMethod> metodos = saleManager.obtainPaymentMethods();
+            for (PaymentMethod pm : metodos) {
+                cboPaymentMethod.addItem(pm);
+            }
+        }
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (inventoryManager == null)
+            return;
+
+        ArrayList<Purchase> compras = inventoryManager.obtainPurchases();
+        for (Purchase pur : compras) {
+            String fechaStr = (pur.getPurchaseDate() != null)
+                    ? dateFormat.format(pur.getPurchaseDate())
+                    : "N/A";
+
+            Object[] row = {
+                    pur.getIdPurchase(),
+                    pur.getSupplierName(),
+                    pur.getPaymentMethodName(),
+                    fechaStr
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
     protected void loadIntoForm(int row) {
         selectedId = (int) tableModel.getValueAt(row, 0);
-        cboSupplier.setSelectedItem(tableModel.getValueAt(row, 1));
-        cboPaymentMethod.setSelectedItem(tableModel.getValueAt(row, 2));
+
+        String provTabla = (String) tableModel.getValueAt(row, 1);
+        String pagoTabla = (String) tableModel.getValueAt(row, 2);
         txtDate.setText((String) tableModel.getValueAt(row, 3));
+
+        for (int i = 0; i < cboSupplier.getItemCount(); i++) {
+            Provider p = (Provider) cboSupplier.getItemAt(i);
+            if (p.getName().equalsIgnoreCase(provTabla)) {
+                cboSupplier.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < cboPaymentMethod.getItemCount(); i++) {
+            PaymentMethod pm = (PaymentMethod) cboPaymentMethod.getItemAt(i);
+            // AQUÍ ESTÁ EL CAMBIO
+            if (pm.getPaymentMethodName().equalsIgnoreCase(pagoTabla)) {
+                cboPaymentMethod.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -62,35 +125,68 @@ public class PanelPurchases extends PanelBase {
 
     @Override
     protected void actionSave() {
-        String date = txtDate.getText().trim();
-        if (date.isEmpty() || cboSupplier.getSelectedItem() == null) {
+        String dateText = txtDate.getText().trim();
+        Provider selectedProv = (Provider) cboSupplier.getSelectedItem();
+        PaymentMethod selectedPay = (PaymentMethod) cboPaymentMethod.getSelectedItem();
+
+        if (dateText.isEmpty() || selectedProv == null || selectedPay == null) {
             showError("Todos los campos son obligatorios.");
             return;
         }
-        Object[] row = { selectedId == -1 ? nextId++ : selectedId,
-                cboSupplier.getSelectedItem(), cboPaymentMethod.getSelectedItem(), date };
-        if (selectedId == -1)
-            data.add(row);
-        else
-            for (int i = 0; i < data.size(); i++)
-                if ((int) data.get(i)[0] == selectedId) {
-                    data.set(i, row);
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        try {
+            java.util.Date parsedDate = dateFormat.parse(dateText);
+            Date sqlDate = new Date(parsedDate.getTime());
+
+            boolean exito;
+            if (selectedId == -1) {
+                // AQUÍ ESTÁ EL CAMBIO
+                exito = inventoryManager.registPurchase(selectedProv.getId(), selectedPay.getIdPaymentMethod(),
+                        sqlDate);
+            } else {
+                Purchase compModificada = new Purchase(
+                        selectedId,
+                        selectedProv.getId(),
+                        selectedPay.getIdPaymentMethod(), // AQUÍ ESTÁ EL CAMBIO
+                        sqlDate,
+                        selectedProv.getName(),
+                        selectedPay.getPaymentMethodName(), // AQUÍ ESTÁ EL CAMBIO
+                        0);
+                exito = inventoryManager.modifyPurchase(compModificada);
+            }
+
+            if (exito) {
+                loadData();
+                setInitialState();
+                clearForm();
+                JOptionPane.showMessageDialog(this, "¡Compra guardada exitosamente!");
+            } else {
+                showError("Hubo un error al guardar la compra en la base de datos.");
+            }
+
+        } catch (ParseException e) {
+            showError("El formato de la fecha es incorrecto. Debe ser dd/MM/yyyy.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione una compra de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar esta compra?"))
+        }
+        if (!confirm("¿Realmente desea eliminar esta compra?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = inventoryManager.deletePurchase(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Compra eliminada correctamente.");
+        } else {
+            showError("No se pudo eliminar la compra de la base de datos.");
+        }
     }
 }

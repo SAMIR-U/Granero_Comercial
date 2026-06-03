@@ -1,8 +1,14 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import co.elgranero.controller.ProductsManager;
+import co.elgranero.net.Product;
+import co.elgranero.net.Subcategory;
 
 public class PanelProducts extends PanelBase {
 
@@ -10,15 +16,17 @@ public class PanelProducts extends PanelBase {
     private JTextArea txtDescription;
     private JComboBox<Object> cboSubcategory;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
-
-    private final String[] SUBCATEGORIES = { "Arroz", "Frijol", "Leche", "Queso", "Pollo", "Res",
-            "Agua", "Jugo", "Jabón", "Shampoo", "Manzana", "Tomate" };
+    private ProductsManager productsManager;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public PanelProducts() {
         super("📦  Gestión de Productos",
                 new String[] { "ID", "Nombre", "Subcategoría", "Vencimiento", "Descripción" });
+        try {
+            this.productsManager = new ProductsManager();
+        } catch (IOException e) {
+            showError("No se pudo conectar con el gestor de productos: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -28,26 +36,61 @@ public class PanelProducts extends PanelBase {
         txtName = addField("Nombre del Producto *");
         txtDescription = addArea("Descripción", 3);
         txtExpiry = addField("Fecha Vencimiento (dd/MM/yyyy)");
+
         cboSubcategory = addCombo("Subcategoría *");
-        for (String s : SUBCATEGORIES)
-            cboSubcategory.addItem(s);
+        cargarSubcategoriasEnCombo();
+
         formPanel.add(Box.createVerticalGlue());
+    }
+
+    private void cargarSubcategoriasEnCombo() {
+        if (productsManager == null)
+            return;
+        ArrayList<Subcategory> lista = productsManager.obtainSubcategories();
+        cboSubcategory.removeAllItems();
+        for (Subcategory sub : lista) {
+            cboSubcategory.addItem(sub);
+        }
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (productsManager == null)
+            return;
+
+        ArrayList<Product> productos = productsManager.obtainProducts();
+        for (Product p : productos) {
+            String fechaStr = (p.getProductExpirationDate() != null)
+                    ? dateFormat.format(p.getProductExpirationDate())
+                    : "N/A";
+
+            Object[] row = {
+                    p.getIdProduct(),
+                    p.getProductName(),
+                    p.getSubcategoryName(),
+                    fechaStr,
+                    p.getProductDescription()
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
     protected void loadIntoForm(int row) {
         selectedId = (int) tableModel.getValueAt(row, 0);
         txtName.setText((String) tableModel.getValueAt(row, 1));
-        cboSubcategory.setSelectedItem(tableModel.getValueAt(row, 2));
         txtExpiry.setText((String) tableModel.getValueAt(row, 3));
         txtDescription.setText((String) tableModel.getValueAt(row, 4));
+
+        String subcategoriaTabla = (String) tableModel.getValueAt(row, 2);
+        for (int i = 0; i < cboSubcategory.getItemCount(); i++) {
+            Subcategory sub = (Subcategory) cboSubcategory.getItemAt(i);
+            if (sub.getSubcategoryName().equalsIgnoreCase(subcategoriaTabla)) {
+                cboSubcategory.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -63,35 +106,69 @@ public class PanelProducts extends PanelBase {
     @Override
     protected void actionSave() {
         String name = txtName.getText().trim();
-        if (name.isEmpty() || cboSubcategory.getSelectedItem() == null) {
+        Subcategory selectedSub = (Subcategory) cboSubcategory.getSelectedItem();
+
+        if (name.isEmpty() || selectedSub == null) {
             showError("Nombre y Subcategoría son obligatorios.");
             return;
         }
-        Object[] row = { selectedId == -1 ? nextId++ : selectedId, name,
-                cboSubcategory.getSelectedItem(), txtExpiry.getText().trim(),
-                txtDescription.getText().trim() };
-        if (selectedId == -1)
-            data.add(row);
-        else
-            for (int i = 0; i < data.size(); i++)
-                if ((int) data.get(i)[0] == selectedId) {
-                    data.set(i, row);
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        Date sqlDate = null;
+        String expiryText = txtExpiry.getText().trim();
+        if (!expiryText.isEmpty()) {
+            try {
+                java.util.Date parsedDate = dateFormat.parse(expiryText);
+                sqlDate = new Date(parsedDate.getTime());
+            } catch (ParseException e) {
+                showError("Formato de fecha inválido. Use dd/MM/yyyy");
+                return;
+            }
+        }
+
+        boolean exito;
+        if (selectedId == -1) {
+            exito = productsManager.registProduct(selectedSub.getIdSubcategory(), name, txtDescription.getText().trim(),
+                    sqlDate);
+        } else {
+            Product prodModificado = new Product(
+                    selectedId,
+                    selectedSub.getIdSubcategory(),
+                    name,
+                    txtDescription.getText().trim(),
+                    sqlDate,
+                    selectedSub.getSubcategoryName(),
+                    "");
+            exito = productsManager.modifyProduct(prodModificado);
+        }
+
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "¡Producto guardado exitosamente!");
+        } else {
+            showError("Hubo un error al guardar el producto en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione un producto de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar este producto?"))
+        }
+        if (!confirm("¿Realmente desea eliminar este producto?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = productsManager.deleteProduct(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+        } else {
+            showError("No se pudo eliminar el producto de la base de datos.");
+        }
     }
 }

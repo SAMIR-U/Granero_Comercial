@@ -1,18 +1,24 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import co.elgranero.controller.InventoryManager;
+import co.elgranero.net.Provider;
 
 public class PanelSuppliers extends PanelBase {
 
     private JTextField txtName, txtDocument, txtPhone;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
+    private InventoryManager inventoryManager;
 
     public PanelSuppliers() {
         super("🏭  Gestión de Proveedores", new String[] { "ID", "Nombre", "Documento", "Celular" });
+        try {
+            this.inventoryManager = new InventoryManager();
+        } catch (IOException e) {
+            showError("No se pudo conectar con el gestor de inventario: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -28,8 +34,19 @@ public class PanelSuppliers extends PanelBase {
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (inventoryManager == null)
+            return;
+
+        ArrayList<Provider> proveedores = inventoryManager.obtainProviders();
+        for (Provider p : proveedores) {
+            Object[] row = {
+                    p.getId(),
+                    p.getName(),
+                    p.getDocument(),
+                    p.getCellphone()
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
@@ -51,34 +68,50 @@ public class PanelSuppliers extends PanelBase {
     @Override
     protected void actionSave() {
         String name = txtName.getText().trim();
-        if (name.isEmpty()) {
-            showError("El nombre es obligatorio.");
+        String document = txtDocument.getText().trim();
+        String phone = txtPhone.getText().trim();
+
+        if (name.isEmpty() || document.isEmpty()) {
+            showError("El nombre y el documento son obligatorios.");
             return;
         }
-        Object[] row = { selectedId == -1 ? nextId++ : selectedId, name,
-                txtDocument.getText().trim(), txtPhone.getText().trim() };
-        if (selectedId == -1)
-            data.add(row);
-        else
-            for (int i = 0; i < data.size(); i++)
-                if ((int) data.get(i)[0] == selectedId) {
-                    data.set(i, row);
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean exito;
+        if (selectedId == -1) {
+            exito = inventoryManager.registProvider(name, document, phone);
+        } else {
+            Provider provModificado = new Provider(selectedId, name, document, phone);
+            exito = inventoryManager.modifyProvider(provModificado);
+        }
+
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "¡Proveedor guardado exitosamente!");
+        } else {
+            showError("Hubo un error al guardar el proveedor en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione un proveedor de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar este proveedor?"))
+        }
+        if (!confirm("¿Realmente desea eliminar este proveedor?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = inventoryManager.deleteProvider(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Proveedor eliminado correctamente.");
+        } else {
+            showError("No se pudo eliminar el proveedor de la base de datos.");
+        }
     }
 }

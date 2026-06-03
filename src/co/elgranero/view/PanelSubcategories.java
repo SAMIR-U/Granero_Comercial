@@ -1,21 +1,26 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import co.elgranero.controller.ProductsManager;
+import co.elgranero.net.Category;
+import co.elgranero.net.Subcategory;
 
 public class PanelSubcategories extends PanelBase {
 
     private JTextField txtName;
     private JComboBox<Object> cboCategory;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
-
-    private final String[] CATEGORIES = { "Granos", "Lácteos", "Carnes", "Bebidas", "Aseo", "Frutas y Verduras" };
+    private ProductsManager productsManager;
 
     public PanelSubcategories() {
         super("📁  Gestión de Subcategorías", new String[] { "ID", "Subcategoría", "Categoría" });
+        try {
+            this.productsManager = new ProductsManager();
+        } catch (IOException e) {
+            showError("No se pudo conectar con el gestor de productos: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -24,23 +29,50 @@ public class PanelSubcategories extends PanelBase {
         addFormTitle("Datos de Subcategoría");
         txtName = addField("Nombre de Subcategoría *");
         cboCategory = addCombo("Categoría *");
-        for (String c : CATEGORIES)
-            cboCategory.addItem(c);
+        cargarCategoriasEnCombo();
         formPanel.add(Box.createVerticalGlue());
+    }
+
+    private void cargarCategoriasEnCombo() {
+        if (productsManager == null)
+            return;
+        ArrayList<Category> lista = productsManager.obtainCategories();
+        cboCategory.removeAllItems();
+        for (Category cat : lista) {
+            cboCategory.addItem(cat);
+        }
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (productsManager == null)
+            return;
+
+        ArrayList<Subcategory> subcategorias = productsManager.obtainSubcategories();
+        for (Subcategory sub : subcategorias) {
+            Object[] row = {
+                    sub.getIdSubcategory(),
+                    sub.getSubcategoryName(),
+                    sub.getCategoryName()
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
     protected void loadIntoForm(int row) {
         selectedId = (int) tableModel.getValueAt(row, 0);
         txtName.setText((String) tableModel.getValueAt(row, 1));
-        cboCategory.setSelectedItem(tableModel.getValueAt(row, 2));
+
+        String categoriaTabla = (String) tableModel.getValueAt(row, 2);
+        for (int i = 0; i < cboCategory.getItemCount(); i++) {
+            Category cat = (Category) cboCategory.getItemAt(i);
+            if (cat.getCategoryName().equalsIgnoreCase(categoriaTabla)) {
+                cboCategory.setSelectedIndex(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -54,33 +86,53 @@ public class PanelSubcategories extends PanelBase {
     @Override
     protected void actionSave() {
         String name = txtName.getText().trim();
-        if (name.isEmpty() || cboCategory.getSelectedItem() == null) {
+        Category selectedCat = (Category) cboCategory.getSelectedItem();
+
+        if (name.isEmpty() || selectedCat == null) {
             showError("Todos los campos son obligatorios.");
             return;
         }
-        Object[] row = { selectedId == -1 ? nextId++ : selectedId, name, cboCategory.getSelectedItem() };
-        if (selectedId == -1)
-            data.add(row);
-        else
-            for (int i = 0; i < data.size(); i++)
-                if ((int) data.get(i)[0] == selectedId) {
-                    data.set(i, row);
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean exito;
+        if (selectedId == -1) {
+            exito = productsManager.registSubcategory(selectedCat.getIdCategory(), name);
+        } else {
+            Subcategory subModificada = new Subcategory(
+                    selectedId,
+                    selectedCat.getIdCategory(),
+                    name,
+                    selectedCat.getCategoryName());
+            exito = productsManager.modifySubcategory(subModificada);
+        }
+
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "¡Subcategoría guardada exitosamente!");
+        } else {
+            showError("Hubo un error al guardar la subcategoría en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione una subcategoría de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar esta subcategoría?"))
+        }
+        if (!confirm("¿Realmente desea eliminar esta subcategoría?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = productsManager.deleteSubcategory(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Subcategoría eliminada correctamente.");
+        } else {
+            showError("No se pudo eliminar la subcategoría de la base de datos.");
+        }
     }
 }

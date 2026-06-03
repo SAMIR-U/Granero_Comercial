@@ -1,18 +1,24 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import co.elgranero.controller.ProductsManager;
+import co.elgranero.net.Category;
 
 public class PanelCategories extends PanelBase {
 
     private JTextField txtName;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
+    private ProductsManager productsManager;
 
     public PanelCategories() {
         super("📂  Gestión de Categorías de Productos", new String[] { "ID", "Categoría" });
+        try {
+            this.productsManager = new ProductsManager();
+        } catch (IOException e) {
+            showError("No se pudo conectar con el gestor de productos: " + e.getMessage());
+        }
         initialize();
     }
 
@@ -26,8 +32,17 @@ public class PanelCategories extends PanelBase {
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (productsManager == null)
+            return;
+
+        ArrayList<Category> categorias = productsManager.obtainCategories();
+        for (Category cat : categorias) {
+            Object[] row = {
+                    cat.getIdCategory(),
+                    cat.getCategoryName()
+            };
+            tableModel.addRow(row);
+        }
     }
 
     @Override
@@ -45,32 +60,48 @@ public class PanelCategories extends PanelBase {
     @Override
     protected void actionSave() {
         String name = txtName.getText().trim();
+
         if (name.isEmpty()) {
             showError("El nombre es obligatorio.");
             return;
         }
-        if (selectedId == -1)
-            data.add(new Object[] { nextId++, name });
-        else
-            for (Object[] r : data)
-                if ((int) r[0] == selectedId) {
-                    r[1] = name;
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean exito;
+        if (selectedId == -1) {
+            exito = productsManager.registCategory(name);
+        } else {
+            Category catModificada = new Category(selectedId, name);
+            exito = productsManager.modifyCategory(catModificada);
+        }
+
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "¡Categoría guardada exitosamente!");
+        } else {
+            showError("Hubo un error al guardar la categoría en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione una categoría de la tabla para eliminar.");
             return;
-        if (!confirm("¿Eliminar esta categoría?"))
+        }
+        if (!confirm("¿Realmente desea eliminar esta categoría?")) {
             return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+        }
+
+        boolean exito = productsManager.deleteCategory(selectedId);
+        if (exito) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Categoría eliminada correctamente.");
+        } else {
+            showError("No se pudo eliminar la categoría de la base de datos.");
+        }
     }
 }

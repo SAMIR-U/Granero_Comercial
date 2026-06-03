@@ -88,6 +88,11 @@ public class MainWindow extends JFrame {
         addSection(nav, "GENERAL");
         addNavBtn(nav, "  💳  Formas de Pago", () -> showPanel(new PanelPaymentMethods()));
 
+        addSection(nav, "REPORTES Y ESTADÍSTICAS");
+        addNavBtn(nav, "  📊  Análisis de Ventas", () -> showPanel(new PanelReportSalesComparison()));
+        addNavBtn(nav, "  👥  Historial de Clientes", () -> showPanel(new PanelReportCustomerHistory()));
+        addNavBtn(nav, "  📈  Rendimiento Productos", () -> showPanel(new PanelReportTopProducts()));
+
         nav.add(Box.createVerticalGlue());
 
         JScrollPane sp = new JScrollPane(nav,

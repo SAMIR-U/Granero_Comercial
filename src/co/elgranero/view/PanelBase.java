@@ -8,15 +8,15 @@ import java.awt.event.*;
 
 public abstract class PanelBase extends JPanel {
 
-    protected static final Color COLOR_NAV_BG     = MainWindow.COLOR_NAV_BG;
-    protected static final Color COLOR_ACCENT      = MainWindow.COLOR_ACCENT;
-    protected static final Color COLOR_APP_BG      = MainWindow.COLOR_APP_BG;
+    protected static final Color COLOR_NAV_BG = MainWindow.COLOR_NAV_BG;
+    protected static final Color COLOR_ACCENT = MainWindow.COLOR_ACCENT;
+    protected static final Color COLOR_APP_BG = MainWindow.COLOR_APP_BG;
     protected static final Color COLOR_PANEL_TITLE = MainWindow.COLOR_PANEL_TITLE;
-    protected static final Color COLOR_WHITE       = MainWindow.COLOR_WHITE;
+    protected static final Color COLOR_WHITE = MainWindow.COLOR_WHITE;
 
-    protected JTable            table;
+    protected JTable table;
     protected DefaultTableModel tableModel;
-    protected JPanel            formPanel;
+    protected JPanel formPanel;
 
     protected JButton btnNew, btnEdit, btnDelete, btnSave, btnCancel;
 
@@ -56,7 +56,9 @@ public abstract class PanelBase extends JPanel {
         p.setBorder(new EmptyBorder(12, 0, 8, 8));
 
         tableModel = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int r, int c) { return false; }
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         table = new JTable(tableModel);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -73,13 +75,17 @@ public abstract class PanelBase extends JPanel {
         table.getTableHeader().setBorder(BorderFactory.createEmptyBorder());
         table.setFillsViewportHeight(true);
         table.getSelectionModel().addListSelectionListener(
-                e -> { if (!e.getValueIsAdjusting()) onRowSelected(); });
+                e -> {
+                    if (!e.getValueIsAdjusting())
+                        onRowSelected();
+                });
 
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             public Component getTableCellRendererComponent(JTable t, Object v,
                     boolean sel, boolean foc, int r, int c) {
                 super.getTableCellRendererComponent(t, v, sel, foc, r, c);
-                if (!sel) setBackground(r % 2 == 0 ? Color.WHITE : new Color(246, 250, 246));
+                if (!sel)
+                    setBackground(r % 2 == 0 ? Color.WHITE : new Color(246, 250, 246));
                 setBorder(new EmptyBorder(0, 8, 0, 8));
                 return this;
             }
@@ -97,26 +103,29 @@ public abstract class PanelBase extends JPanel {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 8));
         p.setBackground(COLOR_APP_BG);
 
-        btnNew    = mkBtn("➕  Nuevo",    new Color(39, 119, 58));
-        btnEdit   = mkBtn("✏  Editar",   new Color(52, 110, 175));
+        btnNew = mkBtn("➕  Nuevo", new Color(39, 119, 58));
+        btnEdit = mkBtn("✏  Editar", new Color(52, 110, 175));
         btnDelete = mkBtn("🗑  Eliminar", new Color(185, 50, 50));
 
         JSeparator sep = new JSeparator(JSeparator.VERTICAL);
         sep.setPreferredSize(new Dimension(1, 28));
         sep.setForeground(new Color(180, 200, 180));
 
-        btnSave   = mkBtn("💾  Guardar",  COLOR_NAV_BG);
+        btnSave = mkBtn("💾  Guardar", COLOR_NAV_BG);
         btnCancel = mkBtn("✖  Cancelar", Color.GRAY);
 
-        btnNew   .addActionListener(e -> onNew());
-        btnEdit  .addActionListener(e -> onEdit());
+        btnNew.addActionListener(e -> onNew());
+        btnEdit.addActionListener(e -> onEdit());
         btnDelete.addActionListener(e -> actionDelete());
-        btnSave  .addActionListener(e -> actionSave());
+        btnSave.addActionListener(e -> actionSave());
         btnCancel.addActionListener(e -> onCancel());
 
-        p.add(btnNew); p.add(btnEdit); p.add(btnDelete);
+        p.add(btnNew);
+        p.add(btnEdit);
+        p.add(btnDelete);
         p.add(sep);
-        p.add(btnSave); p.add(btnCancel);
+        p.add(btnSave);
+        p.add(btnCancel);
         return p;
     }
 
@@ -179,7 +188,8 @@ public abstract class PanelBase extends JPanel {
         formPanel.add(Box.createVerticalStrut(3));
         JTextArea ta = new JTextArea(rows, 20);
         ta.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        ta.setLineWrap(true); ta.setWrapStyleWord(true);
+        ta.setLineWrap(true);
+        ta.setWrapStyleWord(true);
         JScrollPane sp = new JScrollPane(ta);
         sp.setAlignmentX(LEFT_ALIGNMENT);
         sp.setMaximumSize(new Dimension(Integer.MAX_VALUE, rows * 22 + 12));
@@ -224,7 +234,8 @@ public abstract class PanelBase extends JPanel {
     private void traverseComponents(Container c, boolean v) {
         for (Component comp : c.getComponents()) {
             comp.setEnabled(v);
-            if (comp instanceof Container) traverseComponents((Container) comp, v);
+            if (comp instanceof Container)
+                traverseComponents((Container) comp, v);
         }
     }
 
@@ -238,7 +249,10 @@ public abstract class PanelBase extends JPanel {
     }
 
     private void onEdit() {
-        if (table.getSelectedRow() < 0) { showError("Seleccione un registro."); return; }
+        if (table.getSelectedRow() < 0) {
+            showError("Seleccione un registro.");
+            return;
+        }
         setFormEnabled(true);
         btnNew.setEnabled(false);
     }
@@ -253,7 +267,8 @@ public abstract class PanelBase extends JPanel {
         boolean hasSelection = table.getSelectedRow() >= 0;
         btnEdit.setEnabled(hasSelection);
         btnDelete.setEnabled(hasSelection);
-        if (hasSelection) loadIntoForm(table.getSelectedRow());
+        if (hasSelection)
+            loadIntoForm(table.getSelectedRow());
     }
 
     protected void showError(String msg) {
@@ -270,9 +285,14 @@ public abstract class PanelBase extends JPanel {
     }
 
     protected abstract void buildForm();
+
     protected abstract void loadData();
+
     protected abstract void loadIntoForm(int row);
+
     protected abstract void clearForm();
+
     protected abstract void actionSave();
+
     protected abstract void actionDelete();
 }

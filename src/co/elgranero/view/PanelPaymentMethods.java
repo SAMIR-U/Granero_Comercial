@@ -1,18 +1,25 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import co.elgranero.controller.SaleManager;
+import co.elgranero.net.PaymentMethod;
 
 public class PanelPaymentMethods extends PanelBase {
 
     private JTextField txtName;
     private int selectedId = -1;
-    private final List<Object[]> data = new ArrayList<>();
-    private int nextId = 1;
+    private SaleManager saleManager;
 
     public PanelPaymentMethods() {
         super("💳  Gestión de Formas de Pago", new String[] { "ID", "Forma de Pago" });
+        try {
+            this.saleManager = new SaleManager();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         initialize();
     }
 
@@ -26,8 +33,16 @@ public class PanelPaymentMethods extends PanelBase {
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        for (Object[] r : data)
-            tableModel.addRow(r);
+        if (saleManager == null)
+            return;
+
+        ArrayList<PaymentMethod> methods = saleManager.obtainPaymentMethods();
+        for (PaymentMethod pm : methods) {
+            tableModel.addRow(new Object[] {
+                    pm.getIdPaymentMethod(),
+                    pm.getPaymentMethodName()
+            });
+        }
     }
 
     @Override
@@ -49,28 +64,32 @@ public class PanelPaymentMethods extends PanelBase {
             showError("El nombre es obligatorio.");
             return;
         }
-        if (selectedId == -1)
-            data.add(new Object[] { nextId++, name });
-        else
-            for (Object[] r : data)
-                if ((int) r[0] == selectedId) {
-                    r[1] = name;
-                    break;
-                }
-        loadData();
-        setInitialState();
-        clearForm();
+
+        boolean success;
+        if (selectedId == -1) {
+            success = saleManager.registPaymentMethod(name);
+        } else {
+            PaymentMethod pmToUpdate = new PaymentMethod();
+            pmToUpdate.setIdPaymentMethod(selectedId);
+            pmToUpdate.setPaymentMethodName(name);
+            success = saleManager.modifyPaymentMethod(pmToUpdate);
+        }
+
+        if (success) {
+            loadData();
+            setInitialState();
+            clearForm();
+        } else {
+            showError("No se pudo guardar la forma de pago en la base de datos.");
+        }
     }
 
     @Override
     protected void actionDelete() {
         if (table.getSelectedRow() < 0)
             return;
-        if (!confirm("¿Eliminar esta forma de pago?"))
-            return;
-        data.removeIf(r -> (int) r[0] == selectedId);
-        loadData();
-        setInitialState();
-        clearForm();
+
+        showError(
+                "La eliminación de formas de pago no está habilitada para proteger la integridad de las ventas existentes.");
     }
 }
