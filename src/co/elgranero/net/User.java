@@ -1,11 +1,11 @@
 package co.elgranero.net;
 
 public class User {
-    private Integer idClient;
+    private Integer idUser;
     private Integer idCity;
-    private String clientName;
-    private String clientDocument;
-    private String clientPhone;
+    private String userName;
+    private String userDocument;
+    private String userPhone;
     private String personType;
     private String cityName;
     private String countryName;
@@ -13,20 +13,20 @@ public class User {
     }
     public User(Integer idClient, Integer idCity, String clientName, String clientDocument, String clientPhone,
             String personType, String cityName, String countryName) {
-        this.idClient = idClient;
+        this.idUser = idClient;
         this.idCity = idCity;
-        this.clientName = clientName;
-        this.clientDocument = clientDocument;
-        this.clientPhone = clientPhone;
+        this.userName = clientName;
+        this.userDocument = clientDocument;
+        this.userPhone = clientPhone;
         this.personType = personType;
         this.cityName = cityName;
         this.countryName = countryName;
     }
-    public Integer getIdClient() {
-        return idClient;
+    public Integer getIdUser() {
+        return idUser;
     }
-    public void setIdClient(Integer idClient) {
-        this.idClient = idClient;
+    public void setIdUser(Integer idClient) {
+        this.idUser = idClient;
     }
     public Integer getIdCity() {
         return idCity;
@@ -34,23 +34,23 @@ public class User {
     public void setIdCity(Integer idCity) {
         this.idCity = idCity;
     }
-    public String getClientName() {
-        return clientName;
+    public String getUserName() {
+        return userName;
     }
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setUserName(String clientName) {
+        this.userName = clientName;
     }
-    public String getClientDocument() {
-        return clientDocument;
+    public String getUserDocument() {
+        return userDocument;
     }
-    public void setClientDocument(String clientDocument) {
-        this.clientDocument = clientDocument;
+    public void setUserDocument(String clientDocument) {
+        this.userDocument = clientDocument;
     }
-    public String getClientPhone() {
-        return clientPhone;
+    public String getUserPhone() {
+        return userPhone;
     }
-    public void setClientPhone(String clientPhone) {
-        this.clientPhone = clientPhone;
+    public void setUserPhone(String clientPhone) {
+        this.userPhone = clientPhone;
     }
     public String getPersonType() {
         return personType;

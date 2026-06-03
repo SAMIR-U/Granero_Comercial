@@ -1,0 +1,2 @@
+DELETE FROM PROVEEDORES WHERE id_proveedor = ?
+

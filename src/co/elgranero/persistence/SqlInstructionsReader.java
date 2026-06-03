@@ -61,10 +61,16 @@ public final class SqlInstructionsReader {
         return obtainSQLQuery(conn, url);
     }
     
+    public PreparedStatement getDeleteQueryOf(Connection conn, String key) throws IOException, SQLException{
+        String url = sqlQI.deletes.get(key);
+        return obtainSQLQuery(conn, url);
+    }
+
     public PreparedStatement getConsultOf(Connection conn, String key) throws IOException, SQLException{
         String url = sqlQI.selects.get(key);
         return obtainSQLQuery(conn, url);
     }
+
 
     public PreparedStatement getReportOf(Connection conn, String key) throws IOException, SQLException{
         String url = sqlQI.reports.get(key);

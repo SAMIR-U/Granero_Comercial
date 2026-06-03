@@ -79,6 +79,22 @@
         "VENTAS_PRODUCTOS": "sql/selects/ventas_productos.sql",
         "VENTAS": "sql/selects/ventas.sql" 
     },
+    "deletes": {
+        "CATEGORIAS_PRODUCTOS": "sql/deletes/categorias_productos.sql",
+        "CIUDADES": "sql/deletes/ciudades.sql",
+        "COMPRAS": "sql/deletes/compras.sql",
+        "FORMAS_PAGOS": "sql/deletes/formas_pagos.sql",
+        "PAISES": "sql/deletes/paises.sql",
+        "PERSONAS": "sql/deletes/personas.sql",
+        "PRESENTACIONES_PRODUCTOS": "sql/deletes/presentaciones_productos.sql",
+        "PRESENTACIONES": "sql/deletes/presentaciones.sql",
+        "PRODUCTOS_COMPRAS": "sql/deletes/productos_compras.sql",
+        "PRODUCTOS": "sql/deletes/productos.sql",
+        "PROVEEDORES": "sql/deletes/proveedores.sql",
+        "SUBCATEGORIAS_PRODUCTOS": "sql/deletes/subcategorias_productos.sql",
+        "VENTAS_PRODUCTOS": "sql/deletes/ventas_productos.sql",
+        "VENTAS": "sql/deletes/ventas.sql" 
+    },
     "reports":{
         "COMPARE_SALES_OVER_TIME": "sql/reports/compare_sales_over_time.sql",
         "CUSTOMER_PURCHASE_HISTORY": "sql/reports/customer_purchase_history.sql",

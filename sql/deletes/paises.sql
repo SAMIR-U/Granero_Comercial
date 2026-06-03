@@ -1,0 +1,2 @@
+DELETE FROM PAISES WHERE id_pais = ?
+

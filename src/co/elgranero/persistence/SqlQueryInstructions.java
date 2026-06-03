@@ -11,4 +11,5 @@ public class SqlQueryInstructions {
     public Map<String, String> updates;
     public Map<String, String> selects;
     public Map<String, String> reports;
+    public Map<String, String> deletes;
 }

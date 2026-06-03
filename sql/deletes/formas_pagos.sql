@@ -1,0 +1,2 @@
+DELETE FROM FORMAS_PAGOS WHERE id_forma_pago = ?
+

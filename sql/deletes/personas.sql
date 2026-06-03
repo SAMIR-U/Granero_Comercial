@@ -1,0 +1,2 @@
+DELETE FROM PERSONAS WHERE id_cliente = ?
+

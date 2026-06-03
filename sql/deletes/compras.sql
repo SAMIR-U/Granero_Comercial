@@ -1,0 +1,2 @@
+DELETE FROM COMPRAS WHERE id_compra = ?
+

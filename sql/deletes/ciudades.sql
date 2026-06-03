@@ -1,0 +1,2 @@
+DELETE FROM CIUDADES WHERE id_ciudad = ?
+

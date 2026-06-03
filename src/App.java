@@ -9,7 +9,6 @@ import co.elgranero.persistence.SqlQueryInstructions;
 public class App {
     public static void main(String[] args) throws Exception {
         Runner.getInstance().init();
-        
     }
 }
 /*
@@ -25,7 +24,7 @@ System.out.println(sb);
  */
 
 /*
-String data = new String(Files.readAllBytes(Paths.get("sql/selects/querys.txt")));
+String data = new String(Files.readAllBytes(Paths.get("sql/deletes/deletes.txt")));
         String[] blocks = data.split("--");
         int count = 1;
         for (String block : blocks) {
@@ -40,14 +39,13 @@ String data = new String(Files.readAllBytes(Paths.get("sql/selects/querys.txt"))
                         sqlQuery.append('\n');
                     }
                 }
-                Path path = Paths.get("sql/selects/" + name.toLowerCase() + ".sql");
+                Path path = Paths.get("sql/deletes/" + name.toLowerCase() + ".sql");
                 Files.createFile(path);
                 Files.writeString(path, sqlQuery);
                 System.out.println("File created: " + path);
                 count++;
             }
         }
-
 */
 
 /*

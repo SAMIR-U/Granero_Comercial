@@ -1,0 +1,2 @@
+DELETE FROM PRESENTACIONES WHERE id_presentacion = ?
+
