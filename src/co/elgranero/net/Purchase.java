@@ -10,8 +10,7 @@ public class Purchase {
     private Integer purchasedProductsCount;
     public Purchase() {
     }
-    public Purchase(Integer idPurchase, Integer idSupplier, Integer idPaymentMethod, LocalDate purchaseDate,
-            Integer purchasedProductsCount) {
+    public Purchase(Integer idPurchase, Integer idSupplier, Integer idPaymentMethod, LocalDate purchaseDate, Integer purchasedProductsCount) {
         this.idPurchase = idPurchase;
         this.idSupplier = idSupplier;
         this.idPaymentMethod = idPaymentMethod;
