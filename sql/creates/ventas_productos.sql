@@ -5,4 +5,4 @@ CREATE TABLE VENTAS_PRODUCTOS(
     precio_unitario FLOAT NOT NULL,
     CONSTRAINT venpro_fk_idven  FOREIGN KEY (id_venta)    REFERENCES VENTAS(id_venta),
     CONSTRAINT venpro_fk_idprod FOREIGN KEY (id_producto) REFERENCES PRODUCTOS(id_producto)
-)
+) TABLESPACE TEST_TBS

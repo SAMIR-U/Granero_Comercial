@@ -5,4 +5,5 @@ CREATE TABLE CIUDADES(
     CONSTRAINT ciud_pk_idciud       PRIMARY KEY (id_ciudad),
     CONSTRAINT ciud_fk_idpais       FOREIGN KEY (id_pais) REFERENCES PAISES(id_pais),
     CONSTRAINT ciud_uq_nombre_pais  UNIQUE (nombre_ciudad, id_pais)
-)
+) TABLESPACE TEST_TBS
+

@@ -3,4 +3,5 @@ CREATE TABLE PRESENTACIONES(
     nombre_presentacion VARCHAR2(100) NOT NULL,
     CONSTRAINT pres_pk_idpres  PRIMARY KEY (id_presentacion),
     CONSTRAINT pres_uq_nombre  UNIQUE (nombre_presentacion)
-)
+) TABLESPACE TEST_TBS
+

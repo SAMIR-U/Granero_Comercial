@@ -7,4 +7,5 @@ CREATE TABLE PRODUCTOS(
     CONSTRAINT prod_pk_idprod    PRIMARY KEY (id_producto),
     CONSTRAINT prod_fk_idsubcat  FOREIGN KEY (id_subcategoria) REFERENCES SUBCATEGORIAS_PRODUCTOS(id_subcategoria),
     CONSTRAINT prod_uq_nombre    UNIQUE (nombre_producto)
-)
+) TABLESPACE TEST_TBS
+

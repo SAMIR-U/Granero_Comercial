@@ -5,4 +5,5 @@ CREATE TABLE SUBCATEGORIAS_PRODUCTOS(
     CONSTRAINT subcat_pk_idsubcat    PRIMARY KEY (id_subcategoria),
     CONSTRAINT subcat_fk_idcat       FOREIGN KEY (id_categoria) REFERENCES CATEGORIAS_PRODUCTOS(id_categoria),
     CONSTRAINT subcat_uq_nombre_cat  UNIQUE (nombre_subcategoria, id_categoria)
-)
+) TABLESPACE TEST_TBS
+

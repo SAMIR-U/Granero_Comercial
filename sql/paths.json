@@ -16,22 +16,23 @@
         "VENTAS_PRODUCTOS"
     ],
     "creates": {
-        "TABLE_CATEGORIAS_PRODUCTOS": "sql/creates/table_categorias_productos.sql",
-        "TABLE_CIUDADES": "sql/creates/table_ciudades.sql",
-        "TABLE_COMPRAS": "sql/creates/table_compras.sql",
-        "TABLE_FORMAS_PAGOS": "sql/creates/table_formas_pagos.sql",
-        "TABLE_PAISES": "sql/creates/table_paises.sql",
-        "TABLE_PERSONAS": "sql/creates/table_personas.sql",
-        "TABLE_PRESENTACIONES_PRODUCTOS": "sql/creates/table_presentaciones_productos.sql",
-        "TABLE_PRESENTACIONES": "sql/creates/table_presentaciones.sql",
-        "TABLE_PRODUCTOS_COMPRAS": "sql/creates/table_productos_compras.sql",
-        "TABLE_PRODUCTOS": "sql/creates/table_productos.sql",
-        "TABLE_PROVEEDORES": "sql/creates/table_proveedores.sql",
-        "TABLE_SUBCATEGORIAS_PRODUCTOS": "sql/creates/table_subcategorias_productos.sql",
-        "TABLE_VENTAS_PRODUCTOS": "sql/creates/table_ventas_productos.sql",
-        "TABLE_VENTAS": "sql/creates/table_ventas.sql"
+        "CATEGORIAS_PRODUCTOS": "sql/creates/categorias_productos.sql",
+        "CIUDADES": "sql/creates/ciudades.sql",
+        "COMPRAS": "sql/creates/compras.sql",
+        "FORMAS_PAGOS": "sql/creates/formas_pagos.sql",
+        "PAISES": "sql/creates/paises.sql",
+        "PERSONAS": "sql/creates/personas.sql",
+        "PRESENTACIONES_PRODUCTOS": "sql/creates/presentaciones_productos.sql",
+        "PRESENTACIONES": "sql/creates/presentaciones.sql",
+        "PRODUCTOS_COMPRAS": "sql/creates/productos_compras.sql",
+        "PRODUCTOS": "sql/creates/productos.sql",
+        "PROVEEDORES": "sql/creates/proveedores.sql",
+        "SUBCATEGORIAS_PRODUCTOS": "sql/creates/subcategorias_productos.sql",
+        "VENTAS_PRODUCTOS": "sql/creates/ventas_productos.sql",
+        "VENTAS": "sql/creates/ventas.sql"
     },
     "inserts": {
+        "firstUserData": "sql/inserts/initial_data.sql",
         "CATEGORIAS_PRODUCTOS": "sql/inserts/categorias_productos.sql",
         "CIUDADES": "sql/inserts/ciudades.sql",
         "COMPRAS": "sql/inserts/compras.sql",
@@ -64,6 +65,7 @@
         "VENTAS": "sql/update/ventas.sql"
     },
     "selects": {
+        "validate_seller":"sql/selects/validate_seller.sql",
         "CATEGORIAS_PRODUCTOS": "sql/selects/categorias_productos.sql",
         "CIUDADES": "sql/selects/ciudades.sql",
         "COMPRAS": "sql/selects/compras.sql",

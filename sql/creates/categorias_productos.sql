@@ -3,4 +3,5 @@ CREATE TABLE CATEGORIAS_PRODUCTOS(
     nombre_categoria VARCHAR2(100) NOT NULL,
     CONSTRAINT catpro_pk_idcat   PRIMARY KEY (id_categoria),
     CONSTRAINT catpro_uq_nombre  UNIQUE (nombre_categoria)
-)
+) TABLESPACE TEST_TBS
+

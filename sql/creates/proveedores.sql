@@ -4,4 +4,5 @@ CREATE TABLE PROVEEDORES(
     documento_proveedor VARCHAR2(100) NOT NULL,
     celular_proveedor   VARCHAR2(100) NOT NULL,
     CONSTRAINT prov_pk_idprov PRIMARY KEY (id_proveedor)
-)
+) TABLESPACE TEST_TBS
+

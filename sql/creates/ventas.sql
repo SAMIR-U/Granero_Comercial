@@ -7,4 +7,5 @@ CREATE TABLE VENTAS(
     CONSTRAINT ven_pk_idven    PRIMARY KEY (id_venta),
     CONSTRAINT ven_fk_idforpag FOREIGN KEY (id_forma_pago)  REFERENCES FORMAS_PAGOS(id_forma_pago),
     CONSTRAINT ven_fk_idclie   FOREIGN KEY (per_id_cliente) REFERENCES PERSONAS(id_cliente)
-)
+) TABLESPACE TEST_TBS
+
