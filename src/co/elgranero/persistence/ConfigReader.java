@@ -36,11 +36,7 @@ public final class ConfigReader {
     public String getBdPassword() {
         return config.bdPass;
     }
-
-    public String getFirstUser() {
-        return config.firstUserData;
-    }
-
+    
     public static ConfigReader getInstance() throws IOException {
         if (conReader == null) {
             conReader = new ConfigReader();

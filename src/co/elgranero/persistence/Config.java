@@ -4,5 +4,4 @@ public class Config {
     public String bdIp;
     public String bdUser;
     public String bdPass;
-    public String firstUserData;
 }
