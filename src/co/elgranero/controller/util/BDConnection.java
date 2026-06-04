@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 
 import co.elgranero.persistence.ConfigReader;
 import co.elgranero.persistence.SqlInstructionsReader;
@@ -34,16 +35,19 @@ public final class BDConnection {
     }
 
     public boolean initUserConnection(String document, String password) throws SQLException, IOException {
-        boolean result = false;
-        if (validateId(document)) {
+        boolean result = true;
+        if ((result = validateId(document))) {
             ConfigReader cr = ConfigReader.getInstance();
             String bd_ip = cr.getBdIp();
             String bd_user = cr.getBdUser();
-            conn = DriverManager.getConnection(
-                    bd_ip,
-                    bd_user,
-                    password);
-            result = true;
+            try {
+                conn = DriverManager.getConnection(
+                        bd_ip,
+                        bd_user,
+                        password);
+            } catch (SQLException e) {
+                result = false;
+            }
         }
         return result;
     }
