@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -30,7 +33,7 @@ public class PanelSaleProducts extends PanelBase {
     private ArrayList<ProductPresentation> presentationList = new ArrayList<>();
 
     public PanelSaleProducts() {
-        super("🧾  Detalle de Productos en Venta",
+        super("Detalle de Productos en Venta",
                 new String[] { "ID Venta", "ID Producto", "Cantidad", "Precio Unitario", "Nombre Producto" });
         try {
             this.saleManager = new SaleManager();
@@ -47,7 +50,7 @@ public class PanelSaleProducts extends PanelBase {
         cboSaleId = addCombo("Venta (ID | Cliente | Fecha) *");
         cboProduct = addCombo("Producto *");
         txtQuantity = addField("Cantidad *");
-        cboPresentation = addCombo("Presentación del Producto *"); // Reemplaza el campo de precio unitario
+        cboPresentation = addCombo("Presentación del Producto *");
 
         cargarCombos();
 
@@ -60,8 +63,6 @@ public class PanelSaleProducts extends PanelBase {
             }
         });
 
-        // Evento para detectar cuándo cambia el producto seleccionado y recargar las
-        // presentaciones
         cboProduct.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +97,6 @@ public class PanelSaleProducts extends PanelBase {
                 cboProduct.addItem(p.getName());
             }
 
-            // Cargar presentaciones iniciales para el primer producto de la lista
             cargarPresentaciones();
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,8 +124,6 @@ public class PanelSaleProducts extends PanelBase {
         }
     }
 
-    // Método encargado de traer dinámicamente las presentaciones del producto
-    // seleccionado
     private void cargarPresentaciones() {
         if (cboPresentation == null || productsManager == null || cboProduct.getSelectedItem() == null) {
             return;
@@ -253,7 +251,6 @@ public class PanelSaleProducts extends PanelBase {
             int productIdx = cboProduct.getSelectedIndex();
             int idProduct = productList.get(productIdx).getId();
 
-            // Extraemos el precio automáticamente de la presentación seleccionada
             int presIdx = cboPresentation.getSelectedIndex();
             double price = presentationList.get(presIdx).getPresentationPrice();
 
@@ -274,7 +271,7 @@ public class PanelSaleProducts extends PanelBase {
                 loadData();
                 setInitialState();
                 clearForm();
-                JOptionPane.showMessageDialog(this, "¡Producto en venta guardado exitosamente!");
+                JOptionPane.showMessageDialog(this, "Producto en venta guardado exitosamente!");
             } else {
                 showError("No se pudo guardar el detalle del producto en la base de datos.");
             }

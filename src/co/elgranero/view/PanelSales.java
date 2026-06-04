@@ -1,6 +1,8 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -26,7 +28,7 @@ public class PanelSales extends PanelBase {
     private ArrayList<PaymentMethod> paymentMethodList;
 
     public PanelSales() {
-        super("💰  Gestión de Ventas",
+        super("Gestión de Ventas",
                 new String[] { "ID", "ID Pago", "Cliente", "Fecha", "Descuento", "Cant. Productos" });
         try {
             this.saleManager = new SaleManager();
@@ -85,7 +87,7 @@ public class PanelSales extends PanelBase {
             tableModel.addRow(new Object[] {
                     s.getId(),
                     s.getIdPaymentMethod(),
-                    s.getClientName(), // 2. Cambiamos s.getIdClient() por s.getClientName()
+                    s.getClientName(),
                     s.getDate(),
                     s.getDiscount(),
                     s.getProductsCount()
@@ -98,10 +100,8 @@ public class PanelSales extends PanelBase {
         selectedId = (int) tableModel.getValueAt(row, 0);
 
         int idPaymentMethod = (int) tableModel.getValueAt(row, 1);
-        // 3. Obtenemos el nombre del cliente desde la tabla (ahora es un String)
         String clientName = String.valueOf(tableModel.getValueAt(row, 2));
 
-        // Buscamos al cliente por su nombre para seleccionarlo en el combo
         for (int i = 0; i < customerList.size(); i++) {
             if (customerList.get(i).getName().equals(clientName)) {
                 cboCustomer.setSelectedIndex(i);

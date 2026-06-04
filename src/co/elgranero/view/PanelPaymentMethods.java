@@ -1,6 +1,8 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ public class PanelPaymentMethods extends PanelBase {
     private SaleManager saleManager;
 
     public PanelPaymentMethods() {
-        super("💳  Gestión de Formas de Pago", new String[] { "ID", "Forma de Pago" });
+        super("Gestión de Formas de Pago", new String[] { "ID", "Forma de Pago" });
         try {
             this.saleManager = new SaleManager();
         } catch (IOException e) {

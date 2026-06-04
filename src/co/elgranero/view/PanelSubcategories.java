@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.util.ArrayList;
 import co.elgranero.controller.ProductsManager;
@@ -15,7 +18,7 @@ public class PanelSubcategories extends PanelBase {
     private ProductsManager productsManager;
 
     public PanelSubcategories() {
-        super("📁  Gestión de Subcategorías", new String[] { "ID", "Subcategoría", "Categoría" });
+        super("Gestión de Subcategorías", new String[] { "ID", "Subcategoría", "Categoría" });
         try {
             this.productsManager = new ProductsManager();
         } catch (IOException e) {

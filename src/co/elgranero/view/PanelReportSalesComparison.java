@@ -1,6 +1,15 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -18,7 +27,7 @@ public class PanelReportSalesComparison extends PanelBase {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public PanelReportSalesComparison() {
-        super("⏳ Comparación de Ventas en el Tiempo",
+        super("Comparación de Ventas en el Tiempo",
                 new String[] { "Periodo", "Total Ventas", "Unidades Vendidas", "Total Recaudado" });
         try {
             this.reportManager = new ReportManager();
@@ -37,7 +46,7 @@ public class PanelReportSalesComparison extends PanelBase {
         }
 
         if (this.btnNew != null) {
-            this.btnNew.setText("🧹 Limpiar Filtros");
+            this.btnNew.setText("Limpiar Filtros");
         }
     }
 
@@ -51,7 +60,7 @@ public class PanelReportSalesComparison extends PanelBase {
         txtP2Start = addField("Inicio P2 (dd/MM/yyyy) *");
         txtP2End = addField("Fin P2 (dd/MM/yyyy) *");
 
-        JButton btnConsult = new JButton("📊 Comparar Rangos");
+        JButton btnConsult = mkStyledButton("Comparar Rangos");
         btnConsult.addActionListener(e -> loadData());
         formPanel.add(btnConsult);
         formPanel.add(Box.createVerticalGlue());
@@ -107,5 +116,22 @@ public class PanelReportSalesComparison extends PanelBase {
 
     @Override
     protected void actionDelete() {
+    }
+
+    private JButton mkStyledButton(String txt) {
+        JButton b = new JButton(txt);
+        b.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        b.setBackground(new Color(30, 68, 42));
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(50, 100, 64)),
+                new EmptyBorder(9, 18, 9, 18)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        b.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        return b;
     }
 }

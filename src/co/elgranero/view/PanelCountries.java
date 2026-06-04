@@ -1,8 +1,11 @@
 package co.elgranero.view;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import co.elgranero.controller.UserManager;
 import co.elgranero.net.Country;
@@ -14,7 +17,7 @@ public class PanelCountries extends PanelBase {
     private UserManager userManager;
 
     public PanelCountries() {
-        super("🌍  Gestión de Países", new String[] { "ID", "Nombre País" });
+        super("Gestión de Países", new String[] { "ID", "Nombre País" });
         try {
             this.userManager = new UserManager();
         } catch (IOException e) {

@@ -1,6 +1,10 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -20,7 +24,7 @@ public class PanelProducts extends PanelBase {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public PanelProducts() {
-        super("📦 Gestión de Productos",
+        super("Gestión de Productos",
                 new String[] { "ID", "Nombre", "Subcategoría", "Vencimiento", "Descripción" });
         try {
             this.productsManager = new ProductsManager();
@@ -161,5 +165,4 @@ public class PanelProducts extends PanelBase {
             showError("No se pudo eliminar el producto de la base de datos.");
         }
     }
-
 }

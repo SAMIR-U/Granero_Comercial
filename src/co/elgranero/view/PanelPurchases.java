@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -24,7 +27,7 @@ public class PanelPurchases extends PanelBase {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public PanelPurchases() {
-        super("🛒  Gestión de Compras",
+        super("Gestión de Compras",
                 new String[] { "ID", "Proveedor", "Forma de Pago", "Fecha" });
         try {
             this.inventoryManager = new InventoryManager();
@@ -105,7 +108,6 @@ public class PanelPurchases extends PanelBase {
 
         for (int i = 0; i < cboPaymentMethod.getItemCount(); i++) {
             PaymentMethod pm = (PaymentMethod) cboPaymentMethod.getItemAt(i);
-            // AQUÍ ESTÁ EL CAMBIO
             if (pm.getName().equalsIgnoreCase(pagoTabla)) {
                 cboPaymentMethod.setSelectedIndex(i);
                 break;
@@ -140,17 +142,16 @@ public class PanelPurchases extends PanelBase {
 
             boolean success;
             if (selectedId == -1) {
-                // AQUÍ ESTÁ EL CAMBIO
                 success = inventoryManager.registPurchase(selectedProv.getId(), selectedPay.getId(),
                         sqlDate);
             } else {
                 Purchase compModificada = new Purchase(
                         selectedId,
                         selectedProv.getId(),
-                        selectedPay.getId(), // AQUÍ ESTÁ EL CAMBIO
+                        selectedPay.getId(),
                         sqlDate,
                         selectedProv.getName(),
-                        selectedPay.getName(), // AQUÍ ESTÁ EL CAMBIO
+                        selectedPay.getName(),
                         0);
                 success = inventoryManager.modifyPurchase(compModificada);
             }

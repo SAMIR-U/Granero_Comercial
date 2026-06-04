@@ -1,6 +1,8 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.util.ArrayList;
 import co.elgranero.controller.InventoryManager;
@@ -13,7 +15,7 @@ public class PanelSuppliers extends PanelBase {
     private InventoryManager inventoryManager;
 
     public PanelSuppliers() {
-        super("🏭  Gestión de Proveedores", new String[] { "ID", "Nombre", "Documento", "Celular" });
+        super("Gestión de Proveedores", new String[] { "ID", "Nombre", "Documento", "Celular" });
         try {
             this.inventoryManager = new InventoryManager();
         } catch (IOException e) {

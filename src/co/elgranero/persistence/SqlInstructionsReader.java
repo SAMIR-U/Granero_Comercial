@@ -29,7 +29,6 @@ public final class SqlInstructionsReader {
         }
     }
 
-    // borrar este metodo
     public SqlQueryInstructions getSqlQueryInstructions() {
         return sqlQI;
     }

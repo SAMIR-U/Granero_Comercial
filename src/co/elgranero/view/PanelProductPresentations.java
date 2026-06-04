@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -21,7 +24,7 @@ public class PanelProductPresentations extends PanelBase {
     private ProductsManager productsManager;
 
     public PanelProductPresentations() {
-        super("🔗  Presentaciones por Producto",
+        super("Presentaciones por Producto",
                 new String[] { "Producto", "Presentación", "Precio ($)" });
         try {
             this.productsManager = new ProductsManager();
@@ -43,7 +46,6 @@ public class PanelProductPresentations extends PanelBase {
         cboProduct.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Solo recargamos la tabla si NO estamos llenando el formulario automáticamente
                 if (!isLoadingForm && cboProduct.getSelectedItem() != null) {
                     loadData();
                 }
@@ -104,7 +106,7 @@ public class PanelProductPresentations extends PanelBase {
 
     @Override
     protected void loadIntoForm(int row) {
-        isLoadingForm = true; // Bloqueamos el evento del ComboBox temporalmente
+        isLoadingForm = true;
         try {
             selectedIndex = row;
             String nomProd = (String) tableModel.getValueAt(row, 0);
@@ -129,7 +131,7 @@ public class PanelProductPresentations extends PanelBase {
 
             cboProduct.setEnabled(true);
         } finally {
-            isLoadingForm = false; // Liberamos el evento del ComboBox
+            isLoadingForm = false;
         }
     }
 

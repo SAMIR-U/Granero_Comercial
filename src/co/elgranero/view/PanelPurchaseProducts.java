@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -29,7 +32,7 @@ public class PanelPurchaseProducts extends PanelBase {
     private ProductsManager productsManager;
 
     public PanelPurchaseProducts() {
-        super("📋  Detalle de Productos en Compra",
+        super("Detalle de Productos en Compra",
                 new String[] { "ID Compra", "Producto", "Cantidad", "Precio Unitario" });
         try {
             this.inventoryManager = new InventoryManager();
@@ -53,7 +56,6 @@ public class PanelPurchaseProducts extends PanelBase {
         cboPurchaseId.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Solo recargamos la tabla si NO estamos llenando el formulario automáticamente
                 if (!isLoadingForm && cboPurchaseId.getSelectedItem() != null) {
                     loadData();
                 }
@@ -130,7 +132,7 @@ public class PanelPurchaseProducts extends PanelBase {
 
     @Override
     protected void loadIntoForm(int row) {
-        isLoadingForm = true; // Bloqueamos el evento del ComboBox temporalmente
+        isLoadingForm = true;
         try {
             currentPurchaseId = (int) tableModel.getValueAt(row, 0);
             String prodName = (String) tableModel.getValueAt(row, 1);
@@ -158,7 +160,7 @@ public class PanelPurchaseProducts extends PanelBase {
             isEditing = true;
             cboPurchaseId.setEnabled(true);
         } finally {
-            isLoadingForm = false; // Liberamos el evento del ComboBox
+            isLoadingForm = false;
         }
     }
 

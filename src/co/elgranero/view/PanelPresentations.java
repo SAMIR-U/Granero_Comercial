@@ -1,6 +1,8 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.util.ArrayList;
 import co.elgranero.controller.ProductsManager;
@@ -13,7 +15,7 @@ public class PanelPresentations extends PanelBase {
     private ProductsManager productsManager;
 
     public PanelPresentations() {
-        super("🏷  Gestión de Presentaciones", new String[] { "ID", "Presentación" });
+        super("Gestión de Presentaciones", new String[] { "ID", "Presentación" });
         try {
             this.productsManager = new ProductsManager();
         } catch (IOException e) {

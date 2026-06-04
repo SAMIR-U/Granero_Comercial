@@ -1,12 +1,22 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
 import co.elgranero.controller.ReportManager;
 import co.elgranero.net.reports.TopSellingProduct;
 
@@ -17,11 +27,10 @@ public class PanelReportTopProducts extends PanelBase {
     private JTextField txtEndDate;
     private ReportManager reportManager;
 
-    // Bandera para bloquear las recargas automáticas al iniciar el panel
     private boolean explicitSearch = false;
 
     public PanelReportTopProducts() {
-        super("📈 Reporte: Productos Más Vendidos",
+        super("Reporte: Productos Más Vendidos",
                 new String[] { "ID Prod", "Nombre", "Subcategoría", "Categoría", "Unidades", "Total Recaudado" });
         try {
             this.reportManager = new ReportManager();
@@ -38,7 +47,7 @@ public class PanelReportTopProducts extends PanelBase {
             this.btnEdit.setVisible(false);
 
         if (this.btnNew != null) {
-            this.btnNew.setText("🧹 Limpiar Filtros");
+            this.btnNew.setText("Limpiar Filtros");
         }
     }
 
@@ -47,18 +56,17 @@ public class PanelReportTopProducts extends PanelBase {
         addFormTitle("Filtros de Búsqueda");
 
         txtLimit = addField("Límite de Filas a Mostrar *");
-        txtLimit.setText("10"); // Lo dejamos en 10 por comodidad visual
+        txtLimit.setText("10");
 
         txtStartDate = addField("Fecha Inicio (DD/MM/YYYY)");
         txtEndDate = addField("Fecha Fin (DD/MM/YYYY)");
 
-        JButton btnConsult = new JButton("🔍 Consultar");
+        JButton btnConsult = mkStyledButton("Consultar");
         btnConsult.addActionListener(e -> {
             if (txtLimit.getText().trim().isEmpty()) {
                 showError("El límite de filas es obligatorio.");
                 return;
             }
-            // Activamos la bandera indicando que el usuario SÍ quiere buscar
             explicitSearch = true;
             loadData();
         });
@@ -68,8 +76,6 @@ public class PanelReportTopProducts extends PanelBase {
 
     @Override
     protected void loadData() {
-        // Si la orden de carga no viene de pulsar el botón, la ignoramos y no mostramos
-        // nada
         if (!explicitSearch) {
             return;
         }
@@ -131,7 +137,6 @@ public class PanelReportTopProducts extends PanelBase {
             tableModel.setRowCount(0);
         }
 
-        // Al limpiar los filtros, reiniciamos la bandera para evitar recargas fantasma
         explicitSearch = false;
     }
 
@@ -141,5 +146,22 @@ public class PanelReportTopProducts extends PanelBase {
 
     @Override
     protected void actionDelete() {
+    }
+
+    private JButton mkStyledButton(String txt) {
+        JButton b = new JButton(txt);
+        b.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        b.setBackground(new Color(30, 68, 42));
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(50, 100, 64)),
+                new EmptyBorder(9, 18, 9, 18)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        b.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        return b;
     }
 }

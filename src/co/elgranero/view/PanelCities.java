@@ -1,8 +1,12 @@
 package co.elgranero.view;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import co.elgranero.controller.UserManager;
 import co.elgranero.net.City;
@@ -16,7 +20,7 @@ public class PanelCities extends PanelBase {
     private UserManager userManager;
 
     public PanelCities() {
-        super("🏙  Gestión de Ciudades", new String[] { "ID", "Ciudad", "País" });
+        super("Gestión de Ciudades", new String[] { "ID", "Ciudad", "País" });
         try {
             this.userManager = new UserManager();
         } catch (IOException e) {

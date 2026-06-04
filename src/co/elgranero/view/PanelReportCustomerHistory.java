@@ -1,9 +1,21 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.IOException;
 import java.sql.Date;
@@ -11,6 +23,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+
 import co.elgranero.controller.ReportManager;
 import co.elgranero.net.reports.CustomerPurchaseHistory;
 import co.elgranero.net.reports.CustomerPurchaseVolume;
@@ -28,7 +41,7 @@ public class PanelReportCustomerHistory extends PanelBase {
     private JTable tableVolumen;
 
     public PanelReportCustomerHistory() {
-        super("👤 Historial de Compras por Cliente",
+        super("Historial de Compras por Cliente",
                 new String[] { "ID Cliente", "Nombre", "Documento" });
 
         modelVentas = new DefaultTableModel(
@@ -53,32 +66,55 @@ public class PanelReportCustomerHistory extends PanelBase {
             this.btnEdit.setVisible(false);
 
         if (this.btnNew != null) {
-            this.btnNew.setText("🧹 Limpiar Filtros");
+            this.btnNew.setText("Limpiar Filtros");
         }
 
         reorganizeCentralTables();
     }
 
     private void applyTableStyle(JTable table) {
-        table.setRowHeight(25);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        table.setRowHeight(30);
+        table.setIntercellSpacing(new Dimension(10, 0));
+        table.setSelectionBackground(new Color(180, 225, 185));
+        table.setSelectionForeground(new Color(20, 55, 28));
+        table.setGridColor(new Color(218, 235, 218));
+        table.setShowVerticalLines(false);
+        table.setShowHorizontalLines(true);
+        table.setFillsViewportHeight(true);
 
-        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
-        headerRenderer.setBackground(new Color(24, 69, 39));
-        headerRenderer.setForeground(Color.WHITE);
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        headerRenderer.setFont(headerRenderer.getFont().deriveFont(Font.BOLD));
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        header.setBackground(COLOR_NAV_BG);
+        header.setForeground(Color.WHITE);
+        header.setPreferredSize(new Dimension(0, 34));
+        header.setBorder(BorderFactory.createEmptyBorder());
+        header.setReorderingAllowed(false);
 
-        table.getTableHeader().setDefaultRenderer(headerRenderer);
-        table.getTableHeader().setOpaque(false);
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object v,
+                    boolean sel, boolean foc, int r, int c) {
+                super.getTableCellRendererComponent(t, v, sel, foc, r, c);
+                if (!sel) {
+                    setBackground(r % 2 == 0 ? Color.WHITE : new Color(243, 249, 243));
+                    setForeground(new Color(33, 40, 33));
+                } else {
+                    setForeground(new Color(20, 55, 28));
+                }
+                setBorder(new EmptyBorder(0, 10, 0, 10));
+                return this;
+            }
+        });
     }
 
     private void reorganizeCentralTables() {
-        java.awt.Component centerComp = ((java.awt.BorderLayout) getLayout())
+        Component centerComp = ((java.awt.BorderLayout) getLayout())
                 .getLayoutComponent(java.awt.BorderLayout.CENTER);
 
         if (centerComp instanceof JSplitPane) {
             JSplitPane mainSplit = (JSplitPane) centerComp;
-            java.awt.Component leftComp = mainSplit.getLeftComponent();
+            Component leftComp = mainSplit.getLeftComponent();
 
             JScrollPane scrollInfoCliente = null;
             java.awt.Container parentOfScroll = null;
@@ -88,7 +124,7 @@ public class PanelReportCustomerHistory extends PanelBase {
                 parentOfScroll = mainSplit;
             } else if (leftComp instanceof JPanel) {
                 JPanel leftPanel = (JPanel) leftComp;
-                java.awt.Component centerOfLeft = ((java.awt.BorderLayout) leftPanel.getLayout())
+                Component centerOfLeft = ((java.awt.BorderLayout) leftPanel.getLayout())
                         .getLayoutComponent(java.awt.BorderLayout.CENTER);
                 if (centerOfLeft instanceof JScrollPane) {
                     scrollInfoCliente = (JScrollPane) centerOfLeft;
@@ -97,19 +133,22 @@ public class PanelReportCustomerHistory extends PanelBase {
             }
 
             if (scrollInfoCliente != null) {
-                scrollInfoCliente.setBorder(BorderFactory.createTitledBorder("👤 Información General del Cliente"));
+                scrollInfoCliente.setBorder(BorderFactory.createTitledBorder("Información General del Cliente"));
 
                 tableVentas = new JTable(modelVentas);
                 applyTableStyle(tableVentas);
                 JScrollPane scrollVentas = new JScrollPane(tableVentas);
-                scrollVentas.setBorder(BorderFactory.createTitledBorder("📦 Desglose de Ventas y Productos"));
+                scrollVentas.setBorder(BorderFactory.createTitledBorder("Desglose de Ventas y Productos"));
+                scrollVentas.getViewport().setBackground(Color.WHITE);
 
                 tableVolumen = new JTable(modelVolumen);
                 applyTableStyle(tableVolumen);
                 JScrollPane scrollVolumen = new JScrollPane(tableVolumen);
-                scrollVolumen.setBorder(BorderFactory.createTitledBorder("📊 Resumen de Volumen de Compra"));
+                scrollVolumen.setBorder(BorderFactory.createTitledBorder("Resumen de Volumen de Compra"));
+                scrollVolumen.getViewport().setBackground(Color.WHITE);
 
                 JPanel panelTablasVerticales = new JPanel(new java.awt.GridLayout(3, 1, 0, 10));
+                panelTablasVerticales.setBackground(COLOR_APP_BG);
                 panelTablasVerticales.add(scrollInfoCliente);
                 panelTablasVerticales.add(scrollVentas);
                 panelTablasVerticales.add(scrollVolumen);
@@ -134,9 +173,8 @@ public class PanelReportCustomerHistory extends PanelBase {
         txtStartDate = addField("Fecha Inicio (DD/MM/YYYY)");
         txtEndDate = addField("Fecha Fin (DD/MM/YYYY)");
 
-        JButton btnConsult = new JButton("🔍 Buscar Historial");
+        JButton btnConsult = mkStyledButton("Buscar Historial");
         btnConsult.addActionListener(e -> {
-            // Validación estricta solo al hacer click
             if (txtClientId.getText().trim().isEmpty()) {
                 showError("El ID del cliente es obligatorio.");
                 return;
@@ -155,7 +193,6 @@ public class PanelReportCustomerHistory extends PanelBase {
 
         String idStr = txtClientId.getText().trim();
 
-        // Si está vacío en la carga inicial, simplemente abortamos sin mostrar error
         if (idStr.isEmpty()) {
             return;
         }
@@ -250,5 +287,20 @@ public class PanelReportCustomerHistory extends PanelBase {
 
     @Override
     protected void actionDelete() {
+    }
+
+    private JButton mkStyledButton(String txt) {
+        JButton b = new JButton(txt);
+        b.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        b.setBackground(new Color(30, 68, 42));
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        b.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(50, 100, 64)),
+                new EmptyBorder(9, 18, 9, 18)));
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        b.setAlignmentX(Component.LEFT_ALIGNMENT);
+        b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        return b;
     }
 }

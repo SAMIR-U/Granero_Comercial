@@ -1,6 +1,9 @@
 package co.elgranero.view;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,7 +21,7 @@ public class PanelPersons extends PanelBase {
     private UserManager userManager;
 
     public PanelPersons() {
-        super("👤  Gestión de Personas / Clientes",
+        super("Gestión de Personas / Clientes",
                 new String[] { "ID", "Nombre", "Documento", "Teléfono", "Tipo", "Ciudad" });
         try {
             this.userManager = new UserManager();

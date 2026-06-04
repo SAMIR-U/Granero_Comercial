@@ -1,8 +1,12 @@
 package co.elgranero.view;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.Box;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 import co.elgranero.controller.ProductsManager;
 import co.elgranero.net.Category;
 
@@ -13,7 +17,7 @@ public class PanelCategories extends PanelBase {
     private ProductsManager productsManager;
 
     public PanelCategories() {
-        super("📂  Gestión de Categorías de Productos", new String[] { "ID", "Categoría" });
+        super("Gestión de Categorías de Productos", new String[] { "ID", "Categoría" });
         try {
             this.productsManager = new ProductsManager();
         } catch (IOException e) {
@@ -78,7 +82,7 @@ public class PanelCategories extends PanelBase {
             loadData();
             setInitialState();
             clearForm();
-            JOptionPane.showMessageDialog(this, "¡Categoría guardada exitosamente!");
+            JOptionPane.showMessageDialog(this, "Categoría guardada exitosamente!");
         } else {
             showError("Hubo un error al guardar la categoría en la base de datos.");
         }
