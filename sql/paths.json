@@ -48,7 +48,7 @@
         "VENTAS_PRODUCTOS": "sql/inserts/ventas_productos.sql",
         "VENTAS": "sql/inserts/ventas.sql"
     },
-    "update": {
+    "updates": {
         "CATEGORIAS_PRODUCTOS": "sql/update/categorias_productos.sql",
         "CIUDADES": "sql/update/ciudades.sql",
         "COMPRAS": "sql/update/compras.sql",
@@ -68,6 +68,7 @@
         "validate_seller":"sql/selects/validate_seller.sql",
         "CATEGORIAS_PRODUCTOS": "sql/selects/categorias_productos.sql",
         "CIUDADES": "sql/selects/ciudades.sql",
+        "CIUDADES_FILTERED": "sql/selects/ciudades_filtered.sql",
         "COMPRAS": "sql/selects/compras.sql",
         "FORMAS_PAGOS": "sql/selects/formas_pagos.sql",
         "PAISES": "sql/selects/paises.sql",
@@ -104,7 +105,6 @@
         "SALES_BY_CUSTOMER": "sql/reports/sales_by_customer.sql",
         "SALES_BY_PRODUCT_CATEGORY": "sql/reports/sales_by_product_category.sql",
         "SALES_BY_PRODUCT": "sql/reports/sales_by_product.sql",
-        "TOP_SELLING_PRODUCTS": "sql/reports/top_selling_products.sql",
-        "VALIDATE_SELLER_ID": "sql/reports/vendedor_id.sql"
+        "TOP_SELLING_PRODUCTS": "sql/reports/top_selling_products.sql"
     }
 }
