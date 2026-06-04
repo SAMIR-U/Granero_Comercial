@@ -38,8 +38,8 @@ public class PanelCategories extends PanelBase {
         ArrayList<Category> categorias = productsManager.obtainCategories();
         for (Category cat : categorias) {
             Object[] row = {
-                    cat.getIdCategory(),
-                    cat.getCategoryName()
+                    cat.getId(),
+                    cat.getName()
             };
             tableModel.addRow(row);
         }

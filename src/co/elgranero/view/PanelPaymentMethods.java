@@ -39,8 +39,8 @@ public class PanelPaymentMethods extends PanelBase {
         ArrayList<PaymentMethod> methods = saleManager.obtainPaymentMethods();
         for (PaymentMethod pm : methods) {
             tableModel.addRow(new Object[] {
-                    pm.getIdPaymentMethod(),
-                    pm.getPaymentMethodName()
+                    pm.getId(),
+                    pm.getName()
             });
         }
     }
@@ -70,8 +70,8 @@ public class PanelPaymentMethods extends PanelBase {
             success = saleManager.registPaymentMethod(name);
         } else {
             PaymentMethod pmToUpdate = new PaymentMethod();
-            pmToUpdate.setIdPaymentMethod(selectedId);
-            pmToUpdate.setPaymentMethodName(name);
+            pmToUpdate.setId(selectedId);
+            pmToUpdate.setName(name);
             success = saleManager.modifyPaymentMethod(pmToUpdate);
         }
 
@@ -86,10 +86,25 @@ public class PanelPaymentMethods extends PanelBase {
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0)
+        if (table.getSelectedRow() < 0 || selectedId == -1) {
+            showError("Seleccione una forma de pago de la tabla para eliminar.");
             return;
+        }
 
-        showError(
-                "La eliminación de formas de pago no está habilitada para proteger la integridad de las ventas existentes.");
+        if (!confirm(
+                "¿Está seguro de eliminar esta forma de pago? Si está asociada a una venta existente, el sistema denegará la acción.")) {
+            return;
+        }
+        boolean success = saleManager.deletePaymentMethod(selectedId);
+
+        if (success) {
+            loadData();
+            setInitialState();
+            clearForm();
+            JOptionPane.showMessageDialog(this, "Forma de pago eliminada correctamente.");
+        } else {
+            showError(
+                    "No se pudo eliminar la forma de pago. (Es muy probable que esté siendo usada en una venta actual).");
+        }
     }
 }

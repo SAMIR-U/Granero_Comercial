@@ -52,8 +52,8 @@ public class PanelCities extends PanelBase {
             ArrayList<City> cities = userManager.obtainCities(country.getId());
             for (City city : cities) {
                 tableModel.addRow(new Object[] {
-                        city.getIdCity(),
-                        city.getCityName(),
+                        city.getId(),
+                        city.getName(),
                         city.getCountryName()
                 });
             }

@@ -27,7 +27,7 @@ public class PanelSales extends PanelBase {
 
     public PanelSales() {
         super("💰  Gestión de Ventas",
-                new String[] { "ID", "ID Pago", "ID Cliente", "Fecha", "Descuento", "Cant. Productos" });
+                new String[] { "ID", "ID Pago", "Cliente", "Fecha", "Descuento", "Cant. Productos" });
         try {
             this.saleManager = new SaleManager();
             this.userManager = new UserManager();
@@ -54,9 +54,9 @@ public class PanelSales extends PanelBase {
             customerList = new ArrayList<>();
 
             for (User u : allUsers) {
-                if ("CLIENTE".equals(u.getPersonType())) {
+                if ("CLIENTE".equals(u.getType())) {
                     customerList.add(u);
-                    cboCustomer.addItem(u.getUserName());
+                    cboCustomer.addItem(u.getName());
                 }
             }
 
@@ -65,7 +65,7 @@ public class PanelSales extends PanelBase {
             }
             paymentMethodList = saleManager.obtainPaymentMethods();
             for (PaymentMethod p : paymentMethodList) {
-                cboPaymentMethod.addItem(p.getPaymentMethodName());
+                cboPaymentMethod.addItem(p.getName());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,11 +83,11 @@ public class PanelSales extends PanelBase {
         ArrayList<Sale> sales = saleManager.obtainSales();
         for (Sale s : sales) {
             tableModel.addRow(new Object[] {
-                    s.getIdSale(),
+                    s.getId(),
                     s.getIdPaymentMethod(),
-                    s.getIdClient(),
-                    s.getSaleDate(),
-                    s.getSaleDiscount(),
+                    s.getClientName(), // 2. Cambiamos s.getIdClient() por s.getClientName()
+                    s.getDate(),
+                    s.getDiscount(),
                     s.getProductsCount()
             });
         }
@@ -98,17 +98,19 @@ public class PanelSales extends PanelBase {
         selectedId = (int) tableModel.getValueAt(row, 0);
 
         int idPaymentMethod = (int) tableModel.getValueAt(row, 1);
-        int idClient = (int) tableModel.getValueAt(row, 2);
+        // 3. Obtenemos el nombre del cliente desde la tabla (ahora es un String)
+        String clientName = String.valueOf(tableModel.getValueAt(row, 2));
 
+        // Buscamos al cliente por su nombre para seleccionarlo en el combo
         for (int i = 0; i < customerList.size(); i++) {
-            if (customerList.get(i).getIdUser() == idClient) {
+            if (customerList.get(i).getName().equals(clientName)) {
                 cboCustomer.setSelectedIndex(i);
                 break;
             }
         }
 
         for (int i = 0; i < paymentMethodList.size(); i++) {
-            if (paymentMethodList.get(i).getIdPaymentMethod() == idPaymentMethod) {
+            if (paymentMethodList.get(i).getId() == idPaymentMethod) {
                 cboPaymentMethod.setSelectedIndex(i);
                 break;
             }
@@ -144,8 +146,8 @@ public class PanelSales extends PanelBase {
             int customerIdx = cboCustomer.getSelectedIndex();
             int paymentIdx = cboPaymentMethod.getSelectedIndex();
 
-            int idClient = customerList.get(customerIdx).getIdUser();
-            int idPaymentMethod = paymentMethodList.get(paymentIdx).getIdPaymentMethod();
+            int idClient = customerList.get(customerIdx).getId();
+            int idPaymentMethod = paymentMethodList.get(paymentIdx).getId();
 
             boolean success;
             if (selectedId == -1) {
@@ -156,11 +158,11 @@ public class PanelSales extends PanelBase {
                 Date sqlDate = new Date(parsedDate.getTime());
 
                 Sale saleToUpdate = new Sale();
-                saleToUpdate.setIdSale(selectedId);
+                saleToUpdate.setId(selectedId);
                 saleToUpdate.setIdPaymentMethod(idPaymentMethod);
                 saleToUpdate.setIdClient(idClient);
-                saleToUpdate.setSaleDate(sqlDate);
-                saleToUpdate.setSaleDiscount(discount);
+                saleToUpdate.setDate(sqlDate);
+                saleToUpdate.setDiscount(discount);
 
                 success = saleManager.modifySale(saleToUpdate);
             }

@@ -1,23 +1,33 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import co.elgranero.controller.SaleManager;
 import co.elgranero.controller.ProductsManager;
 import co.elgranero.net.SaleProduct;
 import co.elgranero.net.Product;
+import co.elgranero.net.Sale;
+import co.elgranero.net.ProductPresentation;
 
 public class PanelSaleProducts extends PanelBase {
 
-    private JTextField txtSaleId, txtQuantity, txtUnitPrice;
-    private JComboBox<Object> cboProduct;
+    private JComboBox<Object> cboSaleId, cboProduct, cboPresentation;
+    private JTextField txtQuantity;
     private int selectedIndex = -1;
+    private boolean isLoadingForm = false;
 
     private SaleManager saleManager;
     private ProductsManager productsManager;
     private ArrayList<Product> productList;
+    private ArrayList<ProductPresentation> presentationList = new ArrayList<>();
 
     public PanelSaleProducts() {
         super("🧾  Detalle de Productos en Venta",
@@ -34,38 +44,123 @@ public class PanelSaleProducts extends PanelBase {
     @Override
     protected void buildForm() {
         addFormTitle("Producto en Venta");
-        txtSaleId = addField("ID Venta *");
+        cboSaleId = addCombo("Venta (ID | Cliente | Fecha) *");
         cboProduct = addCombo("Producto *");
         txtQuantity = addField("Cantidad *");
-        txtUnitPrice = addField("Precio Unitario *");
+        cboPresentation = addCombo("Presentación del Producto *"); // Reemplaza el campo de precio unitario
 
+        cargarCombos();
+
+        cboSaleId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isLoadingForm && cboSaleId.getSelectedItem() != null) {
+                    loadData();
+                }
+            }
+        });
+
+        // Evento para detectar cuándo cambia el producto seleccionado y recargar las
+        // presentaciones
+        cboProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isLoadingForm) {
+                    cargarPresentaciones();
+                }
+            }
+        });
+
+        cboSaleId.addPropertyChangeListener("enabled", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (Boolean.FALSE.equals(evt.getNewValue())) {
+                    cboSaleId.setEnabled(true);
+                }
+            }
+        });
+
+        cboSaleId.setEnabled(true);
+
+        formPanel.add(Box.createVerticalGlue());
+    }
+
+    private void cargarCombos() {
         try {
             if (productsManager == null) {
                 this.productsManager = new ProductsManager();
             }
+            cboProduct.removeAllItems();
             productList = productsManager.obtainProducts();
             for (Product p : productList) {
-                cboProduct.addItem(p.getProductName());
+                cboProduct.addItem(p.getName());
             }
+
+            // Cargar presentaciones iniciales para el primer producto de la lista
+            cargarPresentaciones();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        formPanel.add(Box.createVerticalGlue());
+        if (saleManager != null) {
+            cboSaleId.removeAllItems();
+            ArrayList<Sale> sales = saleManager.obtainSales();
+
+            Collections.sort(sales, new Comparator<Sale>() {
+                @Override
+                public int compare(Sale s1, Sale s2) {
+                    try {
+                        return String.valueOf(s2.getDate()).compareTo(String.valueOf(s1.getDate()));
+                    } catch (Exception e) {
+                        return Integer.compare(s2.getId(), s1.getId());
+                    }
+                }
+            });
+
+            for (Sale s : sales) {
+                String display = s.getId() + " | " + s.getClientName() + " | " + s.getDate();
+                cboSaleId.addItem(display);
+            }
+        }
+    }
+
+    // Método encargado de traer dinámicamente las presentaciones del producto
+    // seleccionado
+    private void cargarPresentaciones() {
+        if (cboPresentation == null || productsManager == null || cboProduct.getSelectedItem() == null) {
+            return;
+        }
+
+        cboPresentation.removeAllItems();
+        presentationList.clear();
+        int productIdx = cboProduct.getSelectedIndex();
+
+        if (productIdx >= 0 && productIdx < productList.size()) {
+            Product selectedProd = productList.get(productIdx);
+            try {
+                ArrayList<ProductPresentation> pps = productsManager.obtainProductPresentations(selectedProd.getId());
+                if (pps != null) {
+                    presentationList.addAll(pps);
+                    for (ProductPresentation pp : pps) {
+                        cboPresentation.addItem(pp.getPresentationName() + " ($" + pp.getPresentationPrice() + ")");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        if (saleManager == null)
-            return;
-
-        String saleIdStr = txtSaleId.getText().trim();
-        if (saleIdStr.isEmpty())
+        if (saleManager == null || cboSaleId == null || cboSaleId.getSelectedItem() == null)
             return;
 
         try {
-            int saleId = Integer.parseInt(saleIdStr);
+            String selectedStr = cboSaleId.getSelectedItem().toString();
+            int saleId = Integer.parseInt(selectedStr.split("\\|")[0].trim());
+
             ArrayList<SaleProduct> saleProducts = saleManager.obtainSaleProducts(saleId);
             for (SaleProduct sp : saleProducts) {
                 tableModel.addRow(new Object[] {
@@ -76,52 +171,91 @@ public class PanelSaleProducts extends PanelBase {
                         sp.getProductName()
                 });
             }
-        } catch (NumberFormatException e) {
-            // Si el ID de venta ingresado no es numérico, no carga datos
+        } catch (Exception e) {
         }
     }
 
     @Override
     protected void loadIntoForm(int row) {
-        selectedIndex = row;
-        txtSaleId.setText(String.valueOf(tableModel.getValueAt(row, 0)));
+        isLoadingForm = true;
+        try {
+            selectedIndex = row;
+            int idSale = (int) tableModel.getValueAt(row, 0);
 
-        int idProduct = (int) tableModel.getValueAt(row, 1);
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getIdProduct() == idProduct) {
-                cboProduct.setSelectedIndex(i);
-                break;
+            for (int i = 0; i < cboSaleId.getItemCount(); i++) {
+                String itemStr = cboSaleId.getItemAt(i).toString();
+                if (itemStr.startsWith(idSale + " | ")) {
+                    cboSaleId.setSelectedIndex(i);
+                    break;
+                }
             }
-        }
 
-        txtQuantity.setText(String.valueOf(tableModel.getValueAt(row, 2)));
-        txtUnitPrice.setText(String.valueOf(tableModel.getValueAt(row, 3)));
+            int idProduct = (int) tableModel.getValueAt(row, 1);
+            for (int i = 0; i < productList.size(); i++) {
+                if (productList.get(i).getId() == idProduct) {
+                    cboProduct.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            cargarPresentaciones();
+
+            double unitPrice = (double) tableModel.getValueAt(row, 3);
+            for (int i = 0; i < presentationList.size(); i++) {
+                if (Math.abs(presentationList.get(i).getPresentationPrice() - unitPrice) < 0.01) {
+                    cboPresentation.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            txtQuantity.setText(String.valueOf(tableModel.getValueAt(row, 2)));
+
+            cboSaleId.setEnabled(true);
+        } finally {
+            isLoadingForm = false;
+        }
     }
 
     @Override
     protected void clearForm() {
         selectedIndex = -1;
-        txtSaleId.setText("");
         txtQuantity.setText("");
-        txtUnitPrice.setText("");
-        if (cboProduct.getItemCount() > 0)
+        if (cboProduct.getItemCount() > 0) {
             cboProduct.setSelectedIndex(0);
+        }
+        cargarPresentaciones();
+        cboSaleId.setEnabled(true);
     }
 
     @Override
     protected void actionSave() {
         try {
-            int saleId = Integer.parseInt(txtSaleId.getText().trim());
+            if (cboSaleId.getSelectedItem() == null) {
+                showError("Seleccione una venta válida.");
+                return;
+            }
+
+            String selectedStr = cboSaleId.getSelectedItem().toString();
+            int saleId = Integer.parseInt(selectedStr.split("\\|")[0].trim());
+
             int qty = Integer.parseInt(txtQuantity.getText().trim());
-            double price = Double.parseDouble(txtUnitPrice.getText().trim());
 
             if (cboProduct.getSelectedItem() == null) {
                 showError("Seleccione un producto.");
                 return;
             }
 
+            if (cboPresentation.getSelectedItem() == null) {
+                showError("Seleccione una presentación válida para el producto.");
+                return;
+            }
+
             int productIdx = cboProduct.getSelectedIndex();
-            int idProduct = productList.get(productIdx).getIdProduct();
+            int idProduct = productList.get(productIdx).getId();
+
+            // Extraemos el precio automáticamente de la presentación seleccionada
+            int presIdx = cboPresentation.getSelectedIndex();
+            double price = presentationList.get(presIdx).getPresentationPrice();
 
             boolean success;
             if (selectedIndex == -1) {
@@ -140,18 +274,21 @@ public class PanelSaleProducts extends PanelBase {
                 loadData();
                 setInitialState();
                 clearForm();
+                JOptionPane.showMessageDialog(this, "¡Producto en venta guardado exitosamente!");
             } else {
                 showError("No se pudo guardar el detalle del producto en la base de datos.");
             }
         } catch (NumberFormatException e) {
-            showError("Los campos numéricos deben ser valores válidos.");
+            showError("La cantidad debe ser un valor numérico válido.");
         }
     }
 
     @Override
     protected void actionDelete() {
-        if (table.getSelectedRow() < 0 || selectedIndex < 0)
+        if (table.getSelectedRow() < 0 || selectedIndex < 0) {
+            showError("Seleccione un registro de la tabla para eliminar.");
             return;
+        }
         if (!confirm("¿Eliminar este registro?"))
             return;
 
@@ -163,8 +300,17 @@ public class PanelSaleProducts extends PanelBase {
             loadData();
             setInitialState();
             clearForm();
+            JOptionPane.showMessageDialog(this, "Registro eliminado correctamente.");
         } else {
             showError("No se pudo eliminar el registro del producto.");
+        }
+    }
+
+    @Override
+    public void setInitialState() {
+        super.setInitialState();
+        if (cboSaleId != null) {
+            cboSaleId.setEnabled(true);
         }
     }
 }

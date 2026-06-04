@@ -73,13 +73,13 @@ public class PanelPurchases extends PanelBase {
 
         ArrayList<Purchase> compras = inventoryManager.obtainPurchases();
         for (Purchase pur : compras) {
-            String fechaStr = (pur.getPurchaseDate() != null)
-                    ? dateFormat.format(pur.getPurchaseDate())
+            String fechaStr = (pur.getDate() != null)
+                    ? dateFormat.format(pur.getDate())
                     : "N/A";
 
             Object[] row = {
-                    pur.getIdPurchase(),
-                    pur.getSupplierName(),
+                    pur.getId(),
+                    pur.getName(),
                     pur.getPaymentMethodName(),
                     fechaStr
             };
@@ -106,7 +106,7 @@ public class PanelPurchases extends PanelBase {
         for (int i = 0; i < cboPaymentMethod.getItemCount(); i++) {
             PaymentMethod pm = (PaymentMethod) cboPaymentMethod.getItemAt(i);
             // AQUÍ ESTÁ EL CAMBIO
-            if (pm.getPaymentMethodName().equalsIgnoreCase(pagoTabla)) {
+            if (pm.getName().equalsIgnoreCase(pagoTabla)) {
                 cboPaymentMethod.setSelectedIndex(i);
                 break;
             }
@@ -138,24 +138,24 @@ public class PanelPurchases extends PanelBase {
             java.util.Date parsedDate = dateFormat.parse(dateText);
             Date sqlDate = new Date(parsedDate.getTime());
 
-            boolean exito;
+            boolean success;
             if (selectedId == -1) {
                 // AQUÍ ESTÁ EL CAMBIO
-                exito = inventoryManager.registPurchase(selectedProv.getId(), selectedPay.getIdPaymentMethod(),
+                success = inventoryManager.registPurchase(selectedProv.getId(), selectedPay.getId(),
                         sqlDate);
             } else {
                 Purchase compModificada = new Purchase(
                         selectedId,
                         selectedProv.getId(),
-                        selectedPay.getIdPaymentMethod(), // AQUÍ ESTÁ EL CAMBIO
+                        selectedPay.getId(), // AQUÍ ESTÁ EL CAMBIO
                         sqlDate,
                         selectedProv.getName(),
-                        selectedPay.getPaymentMethodName(), // AQUÍ ESTÁ EL CAMBIO
+                        selectedPay.getName(), // AQUÍ ESTÁ EL CAMBIO
                         0);
-                exito = inventoryManager.modifyPurchase(compModificada);
+                success = inventoryManager.modifyPurchase(compModificada);
             }
 
-            if (exito) {
+            if (success) {
                 loadData();
                 setInitialState();
                 clearForm();

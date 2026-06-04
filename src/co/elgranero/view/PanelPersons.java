@@ -62,11 +62,11 @@ public class PanelPersons extends PanelBase {
         ArrayList<User> users = userManager.obtainUsers();
         for (User u : users) {
             tableModel.addRow(new Object[] {
-                    u.getIdUser(),
-                    u.getUserName(),
-                    u.getUserDocument(),
-                    u.getUserPhone(),
-                    u.getPersonType(),
+                    u.getId(),
+                    u.getName(),
+                    u.getDocument(),
+                    u.getPhone(),
+                    u.getType(),
                     u.getCityName()
             });
         }
@@ -93,7 +93,7 @@ public class PanelPersons extends PanelBase {
         if (cityName != null) {
             for (int i = 0; i < cboCity.getItemCount(); i++) {
                 City c = (City) cboCity.getItemAt(i);
-                if (c.getCityName().equalsIgnoreCase(cityName)) {
+                if (c.getName().equalsIgnoreCase(cityName)) {
                     cboCity.setSelectedIndex(i);
                     break;
                 }
@@ -133,16 +133,16 @@ public class PanelPersons extends PanelBase {
             boolean exito;
 
             if (selectedId == -1) {
-                exito = userManager.registUser(selectedCity.getIdCity(), name, docInt, phone, personTypeIndex);
+                exito = userManager.registUser(selectedCity.getId(), name, docInt, phone, personTypeIndex);
             } else {
                 User u = new User(
                         selectedId,
-                        selectedCity.getIdCity(),
+                        selectedCity.getId(),
                         name,
                         doc,
                         phone,
                         cboType.getSelectedItem().toString(),
-                        selectedCity.getCityName(),
+                        selectedCity.getName(),
                         selectedCity.getCountryName());
                 exito = userManager.modifyUser(u);
             }

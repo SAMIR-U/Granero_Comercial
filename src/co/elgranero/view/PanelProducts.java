@@ -20,7 +20,7 @@ public class PanelProducts extends PanelBase {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public PanelProducts() {
-        super("📦  Gestión de Productos",
+        super("📦 Gestión de Productos",
                 new String[] { "ID", "Nombre", "Subcategoría", "Vencimiento", "Descripción" });
         try {
             this.productsManager = new ProductsManager();
@@ -36,10 +36,8 @@ public class PanelProducts extends PanelBase {
         txtName = addField("Nombre del Producto *");
         txtDescription = addArea("Descripción", 3);
         txtExpiry = addField("Fecha Vencimiento (dd/MM/yyyy)");
-
         cboSubcategory = addCombo("Subcategoría *");
         cargarSubcategoriasEnCombo();
-
         formPanel.add(Box.createVerticalGlue());
     }
 
@@ -58,19 +56,17 @@ public class PanelProducts extends PanelBase {
         tableModel.setRowCount(0);
         if (productsManager == null)
             return;
-
         ArrayList<Product> productos = productsManager.obtainProducts();
         for (Product p : productos) {
-            String fechaStr = (p.getProductExpirationDate() != null)
-                    ? dateFormat.format(p.getProductExpirationDate())
+            String fechaStr = (p.getExpirationDate() != null)
+                    ? dateFormat.format(p.getExpirationDate())
                     : "N/A";
-
             Object[] row = {
-                    p.getIdProduct(),
-                    p.getProductName(),
+                    p.getId(),
+                    p.getName(),
                     p.getSubcategoryName(),
                     fechaStr,
-                    p.getProductDescription()
+                    p.getDescription()
             };
             tableModel.addRow(row);
         }
@@ -82,11 +78,10 @@ public class PanelProducts extends PanelBase {
         txtName.setText((String) tableModel.getValueAt(row, 1));
         txtExpiry.setText((String) tableModel.getValueAt(row, 3));
         txtDescription.setText((String) tableModel.getValueAt(row, 4));
-
         String subcategoriaTabla = (String) tableModel.getValueAt(row, 2);
         for (int i = 0; i < cboSubcategory.getItemCount(); i++) {
             Subcategory sub = (Subcategory) cboSubcategory.getItemAt(i);
-            if (sub.getSubcategoryName().equalsIgnoreCase(subcategoriaTabla)) {
+            if (sub.getName().equalsIgnoreCase(subcategoriaTabla)) {
                 cboSubcategory.setSelectedIndex(i);
                 break;
             }
@@ -107,12 +102,10 @@ public class PanelProducts extends PanelBase {
     protected void actionSave() {
         String name = txtName.getText().trim();
         Subcategory selectedSub = (Subcategory) cboSubcategory.getSelectedItem();
-
         if (name.isEmpty() || selectedSub == null) {
             showError("Nombre y Subcategoría son obligatorios.");
             return;
         }
-
         Date sqlDate = null;
         String expiryText = txtExpiry.getText().trim();
         if (!expiryText.isEmpty()) {
@@ -124,23 +117,21 @@ public class PanelProducts extends PanelBase {
                 return;
             }
         }
-
         boolean exito;
         if (selectedId == -1) {
-            exito = productsManager.registProduct(selectedSub.getIdSubcategory(), name, txtDescription.getText().trim(),
+            exito = productsManager.registProduct(selectedSub.getId(), name, txtDescription.getText().trim(),
                     sqlDate);
         } else {
             Product prodModificado = new Product(
                     selectedId,
-                    selectedSub.getIdSubcategory(),
+                    selectedSub.getId(),
                     name,
                     txtDescription.getText().trim(),
                     sqlDate,
-                    selectedSub.getSubcategoryName(),
+                    selectedSub.getName(),
                     "");
             exito = productsManager.modifyProduct(prodModificado);
         }
-
         if (exito) {
             loadData();
             setInitialState();
@@ -160,7 +151,6 @@ public class PanelProducts extends PanelBase {
         if (!confirm("¿Realmente desea eliminar este producto?")) {
             return;
         }
-
         boolean exito = productsManager.deleteProduct(selectedId);
         if (exito) {
             loadData();
@@ -171,4 +161,5 @@ public class PanelProducts extends PanelBase {
             showError("No se pudo eliminar el producto de la base de datos.");
         }
     }
+
 }

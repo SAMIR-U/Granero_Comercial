@@ -1,6 +1,10 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import co.elgranero.controller.ProductsManager;
@@ -13,11 +17,12 @@ public class PanelProductPresentations extends PanelBase {
     private JComboBox<Object> cboPresentation, cboProduct;
     private JTextField txtPrice;
     private int selectedIndex = -1;
+    private boolean isLoadingForm = false;
     private ProductsManager productsManager;
 
     public PanelProductPresentations() {
         super("🔗  Presentaciones por Producto",
-                new String[] { "Presentación", "Producto", "Precio ($)" });
+                new String[] { "Producto", "Presentación", "Precio ($)" });
         try {
             this.productsManager = new ProductsManager();
         } catch (IOException e) {
@@ -29,11 +34,32 @@ public class PanelProductPresentations extends PanelBase {
     @Override
     protected void buildForm() {
         addFormTitle("Asignar Presentación");
-        cboPresentation = addCombo("Presentación *");
         cboProduct = addCombo("Producto *");
+        cboPresentation = addCombo("Presentación *");
         txtPrice = addField("Precio de Presentación *");
 
         cargarCombos();
+
+        cboProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Solo recargamos la tabla si NO estamos llenando el formulario automáticamente
+                if (!isLoadingForm && cboProduct.getSelectedItem() != null) {
+                    loadData();
+                }
+            }
+        });
+
+        cboProduct.addPropertyChangeListener("enabled", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (Boolean.FALSE.equals(evt.getNewValue())) {
+                    cboProduct.setEnabled(true);
+                }
+            }
+        });
+
+        cboProduct.setEnabled(true);
 
         formPanel.add(Box.createVerticalGlue());
     }
@@ -58,16 +84,17 @@ public class PanelProductPresentations extends PanelBase {
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        if (productsManager == null)
+        if (productsManager == null || cboProduct == null)
             return;
 
-        ArrayList<Product> productos = productsManager.obtainProducts();
-        for (Product p : productos) {
-            ArrayList<ProductPresentation> pps = productsManager.obtainProductPresentations(p.getIdProduct());
+        Product selectedProd = (Product) cboProduct.getSelectedItem();
+
+        if (selectedProd != null) {
+            ArrayList<ProductPresentation> pps = productsManager.obtainProductPresentations(selectedProd.getId());
             for (ProductPresentation pp : pps) {
                 Object[] row = {
+                        selectedProd.getName(),
                         pp.getPresentationName(),
-                        p.getProductName(),
                         pp.getPresentationPrice()
                 };
                 tableModel.addRow(row);
@@ -77,25 +104,32 @@ public class PanelProductPresentations extends PanelBase {
 
     @Override
     protected void loadIntoForm(int row) {
-        selectedIndex = row;
-        String nomPres = (String) tableModel.getValueAt(row, 0);
-        String nomProd = (String) tableModel.getValueAt(row, 1);
-        txtPrice.setText(String.valueOf(tableModel.getValueAt(row, 2)));
+        isLoadingForm = true; // Bloqueamos el evento del ComboBox temporalmente
+        try {
+            selectedIndex = row;
+            String nomProd = (String) tableModel.getValueAt(row, 0);
+            String nomPres = (String) tableModel.getValueAt(row, 1);
+            txtPrice.setText(String.valueOf(tableModel.getValueAt(row, 2)));
 
-        for (int i = 0; i < cboPresentation.getItemCount(); i++) {
-            Presentation pre = (Presentation) cboPresentation.getItemAt(i);
-            if (pre.getName().equalsIgnoreCase(nomPres)) {
-                cboPresentation.setSelectedIndex(i);
-                break;
+            for (int i = 0; i < cboPresentation.getItemCount(); i++) {
+                Presentation pre = (Presentation) cboPresentation.getItemAt(i);
+                if (pre.getName().equalsIgnoreCase(nomPres)) {
+                    cboPresentation.setSelectedIndex(i);
+                    break;
+                }
             }
-        }
 
-        for (int i = 0; i < cboProduct.getItemCount(); i++) {
-            Product prod = (Product) cboProduct.getItemAt(i);
-            if (prod.getProductName().equalsIgnoreCase(nomProd)) {
-                cboProduct.setSelectedIndex(i);
-                break;
+            for (int i = 0; i < cboProduct.getItemCount(); i++) {
+                Product prod = (Product) cboProduct.getItemAt(i);
+                if (prod.getName().equalsIgnoreCase(nomProd)) {
+                    cboProduct.setSelectedIndex(i);
+                    break;
+                }
             }
+
+            cboProduct.setEnabled(true);
+        } finally {
+            isLoadingForm = false; // Liberamos el evento del ComboBox
         }
     }
 
@@ -105,8 +139,8 @@ public class PanelProductPresentations extends PanelBase {
         txtPrice.setText("");
         if (cboPresentation.getItemCount() > 0)
             cboPresentation.setSelectedIndex(0);
-        if (cboProduct.getItemCount() > 0)
-            cboProduct.setSelectedIndex(0);
+
+        cboProduct.setEnabled(true);
     }
 
     @Override
@@ -125,12 +159,12 @@ public class PanelProductPresentations extends PanelBase {
             boolean exito;
 
             if (selectedIndex == -1) {
-                exito = productsManager.registProductPresentation(selectedPre.getId(), selectedProd.getIdProduct(),
+                exito = productsManager.registProductPresentation(selectedPre.getId(), selectedProd.getId(),
                         price);
             } else {
                 ProductPresentation ppModificada = new ProductPresentation(
                         selectedPre.getId(),
-                        selectedProd.getIdProduct(),
+                        selectedProd.getId(),
                         price,
                         selectedPre.getName());
                 exito = productsManager.modifyProductPresentation(ppModificada);
@@ -161,8 +195,8 @@ public class PanelProductPresentations extends PanelBase {
             return;
         }
 
-        String nomPres = (String) tableModel.getValueAt(row, 0);
-        String nomProd = (String) tableModel.getValueAt(row, 1);
+        String nomProd = (String) tableModel.getValueAt(row, 0);
+        String nomPres = (String) tableModel.getValueAt(row, 1);
         int idPres = -1;
         int idProd = -1;
 
@@ -176,8 +210,8 @@ public class PanelProductPresentations extends PanelBase {
 
         for (int i = 0; i < cboProduct.getItemCount(); i++) {
             Product prod = (Product) cboProduct.getItemAt(i);
-            if (prod.getProductName().equalsIgnoreCase(nomProd)) {
-                idProd = prod.getIdProduct();
+            if (prod.getName().equalsIgnoreCase(nomProd)) {
+                idProd = prod.getId();
                 break;
             }
         }
@@ -190,6 +224,14 @@ public class PanelProductPresentations extends PanelBase {
             JOptionPane.showMessageDialog(this, "Registro eliminado correctamente.");
         } else {
             showError("No se pudo eliminar el registro de la base de datos.");
+        }
+    }
+
+    @Override
+    public void setInitialState() {
+        super.setInitialState();
+        if (cboProduct != null) {
+            cboProduct.setEnabled(true);
         }
     }
 }

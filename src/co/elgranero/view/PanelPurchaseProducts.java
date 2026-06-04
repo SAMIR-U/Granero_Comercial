@@ -1,19 +1,27 @@
 package co.elgranero.view;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import co.elgranero.controller.InventoryManager;
 import co.elgranero.controller.ProductsManager;
 import co.elgranero.net.Product;
 import co.elgranero.net.PurchaseProduct;
+import co.elgranero.net.Purchase;
 
 public class PanelPurchaseProducts extends PanelBase {
 
-    private JTextField txtPurchaseId, txtQuantity, txtUnitPrice;
-    private JComboBox<Object> cboProduct;
+    private JTextField txtQuantity, txtUnitPrice;
+    private JComboBox<Object> cboPurchaseId, cboProduct;
     private boolean isEditing = false;
+    private boolean isLoadingForm = false;
     private int currentPurchaseId = -1;
     private int currentProductId = -1;
 
@@ -30,40 +38,82 @@ public class PanelPurchaseProducts extends PanelBase {
             showError("Error de conexión: " + e.getMessage());
         }
         initialize();
-
-        txtPurchaseId.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                loadData();
-            }
-        });
     }
 
     @Override
     protected void buildForm() {
         addFormTitle("Producto en Compra");
-        txtPurchaseId = addField("ID Compra *");
+        cboPurchaseId = addCombo("Compra (ID | Proveedor | Fecha) *");
         cboProduct = addCombo("Producto *");
         txtQuantity = addField("Cantidad *");
         txtUnitPrice = addField("Precio Unitario *");
 
+        cargarCombos();
+
+        cboPurchaseId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Solo recargamos la tabla si NO estamos llenando el formulario automáticamente
+                if (!isLoadingForm && cboPurchaseId.getSelectedItem() != null) {
+                    loadData();
+                }
+            }
+        });
+
+        cboPurchaseId.addPropertyChangeListener("enabled", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (Boolean.FALSE.equals(evt.getNewValue())) {
+                    cboPurchaseId.setEnabled(true);
+                }
+            }
+        });
+
+        cboPurchaseId.setEnabled(true);
+
+        formPanel.add(Box.createVerticalGlue());
+    }
+
+    private void cargarCombos() {
         if (productsManager != null) {
+            cboProduct.removeAllItems();
             ArrayList<Product> products = productsManager.obtainProducts();
             for (Product p : products) {
                 cboProduct.addItem(p);
             }
         }
 
-        formPanel.add(Box.createVerticalGlue());
+        if (inventoryManager != null) {
+            cboPurchaseId.removeAllItems();
+            ArrayList<Purchase> purchases = inventoryManager.obtainPurchases();
+
+            Collections.sort(purchases, new Comparator<Purchase>() {
+                @Override
+                public int compare(Purchase p1, Purchase p2) {
+                    try {
+                        return String.valueOf(p2.getDate()).compareTo(String.valueOf(p1.getDate()));
+                    } catch (Exception e) {
+                        return Integer.compare(p2.getId(), p1.getId());
+                    }
+                }
+            });
+
+            for (Purchase p : purchases) {
+                String display = p.getId() + " | " + p.getName() + " | " + p.getDate();
+                cboPurchaseId.addItem(display);
+            }
+        }
     }
 
     @Override
     protected void loadData() {
         tableModel.setRowCount(0);
-        if (inventoryManager == null)
+        if (inventoryManager == null || cboPurchaseId == null || cboPurchaseId.getSelectedItem() == null)
             return;
 
         try {
-            int purchaseId = Integer.parseInt(txtPurchaseId.getText().trim());
+            String selectedStr = cboPurchaseId.getSelectedItem().toString();
+            int purchaseId = Integer.parseInt(selectedStr.split("\\|")[0].trim());
             ArrayList<PurchaseProduct> list = inventoryManager.obtainPurchaseProducts(purchaseId);
             for (PurchaseProduct pp : list) {
                 Object[] row = {
@@ -74,28 +124,42 @@ public class PanelPurchaseProducts extends PanelBase {
                 };
                 tableModel.addRow(row);
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
         }
     }
 
     @Override
     protected void loadIntoForm(int row) {
-        currentPurchaseId = (int) tableModel.getValueAt(row, 0);
-        String prodName = (String) tableModel.getValueAt(row, 1);
+        isLoadingForm = true; // Bloqueamos el evento del ComboBox temporalmente
+        try {
+            currentPurchaseId = (int) tableModel.getValueAt(row, 0);
+            String prodName = (String) tableModel.getValueAt(row, 1);
 
-        txtPurchaseId.setText(String.valueOf(currentPurchaseId));
-        txtQuantity.setText(String.valueOf(tableModel.getValueAt(row, 2)));
-        txtUnitPrice.setText(String.valueOf(tableModel.getValueAt(row, 3)));
-
-        for (int i = 0; i < cboProduct.getItemCount(); i++) {
-            Product p = (Product) cboProduct.getItemAt(i);
-            if (p.getProductName().equalsIgnoreCase(prodName)) {
-                cboProduct.setSelectedIndex(i);
-                currentProductId = p.getIdProduct();
-                break;
+            for (int i = 0; i < cboPurchaseId.getItemCount(); i++) {
+                String itemStr = cboPurchaseId.getItemAt(i).toString();
+                if (itemStr.startsWith(currentPurchaseId + " | ")) {
+                    cboPurchaseId.setSelectedIndex(i);
+                    break;
+                }
             }
+
+            txtQuantity.setText(String.valueOf(tableModel.getValueAt(row, 2)));
+            txtUnitPrice.setText(String.valueOf(tableModel.getValueAt(row, 3)));
+
+            for (int i = 0; i < cboProduct.getItemCount(); i++) {
+                Product p = (Product) cboProduct.getItemAt(i);
+                if (p.getName().equalsIgnoreCase(prodName)) {
+                    cboProduct.setSelectedIndex(i);
+                    currentProductId = p.getId();
+                    break;
+                }
+            }
+
+            isEditing = true;
+            cboPurchaseId.setEnabled(true);
+        } finally {
+            isLoadingForm = false; // Liberamos el evento del ComboBox
         }
-        isEditing = true;
     }
 
     @Override
@@ -103,19 +167,27 @@ public class PanelPurchaseProducts extends PanelBase {
         isEditing = false;
         currentPurchaseId = -1;
         currentProductId = -1;
-        txtPurchaseId.setText("");
         txtQuantity.setText("");
         txtUnitPrice.setText("");
+
         if (cboProduct.getItemCount() > 0) {
             cboProduct.setSelectedIndex(0);
         }
-        tableModel.setRowCount(0);
+
+        cboPurchaseId.setEnabled(true);
     }
 
     @Override
     protected void actionSave() {
         try {
-            int purchaseId = Integer.parseInt(txtPurchaseId.getText().trim());
+            if (cboPurchaseId.getSelectedItem() == null) {
+                showError("Seleccione un ID de compra válido.");
+                return;
+            }
+
+            String selectedStr = cboPurchaseId.getSelectedItem().toString();
+            int purchaseId = Integer.parseInt(selectedStr.split("\\|")[0].trim());
+
             int qty = Integer.parseInt(txtQuantity.getText().trim());
             double price = Double.parseDouble(txtUnitPrice.getText().trim());
             Product selectedProd = (Product) cboProduct.getSelectedItem();
@@ -127,14 +199,14 @@ public class PanelPurchaseProducts extends PanelBase {
 
             boolean exito;
             if (!isEditing) {
-                exito = inventoryManager.registPurchaseProduct(selectedProd.getIdProduct(), purchaseId, qty, price);
+                exito = inventoryManager.registPurchaseProduct(selectedProd.getId(), purchaseId, qty, price);
             } else {
                 PurchaseProduct pp = new PurchaseProduct(
-                        selectedProd.getIdProduct(),
+                        selectedProd.getId(),
                         purchaseId,
                         qty,
                         price,
-                        selectedProd.getProductName());
+                        selectedProd.getName());
                 exito = inventoryManager.modifyPurchaseProduct(pp);
             }
 
@@ -151,7 +223,7 @@ public class PanelPurchaseProducts extends PanelBase {
             }
 
         } catch (NumberFormatException e) {
-            showError("El ID de compra, la cantidad y el precio deben ser valores numéricos válidos.");
+            showError("La cantidad y el precio deben ser valores numéricos válidos.");
         }
     }
 
@@ -174,6 +246,14 @@ public class PanelPurchaseProducts extends PanelBase {
             txtUnitPrice.setText("");
         } else {
             showError("No se pudo eliminar el registro.");
+        }
+    }
+
+    @Override
+    public void setInitialState() {
+        super.setInitialState();
+        if (cboPurchaseId != null) {
+            cboPurchaseId.setEnabled(true);
         }
     }
 }

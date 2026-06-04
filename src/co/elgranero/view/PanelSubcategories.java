@@ -52,8 +52,8 @@ public class PanelSubcategories extends PanelBase {
         ArrayList<Subcategory> subcategorias = productsManager.obtainSubcategories();
         for (Subcategory sub : subcategorias) {
             Object[] row = {
-                    sub.getIdSubcategory(),
-                    sub.getSubcategoryName(),
+                    sub.getId(),
+                    sub.getName(),
                     sub.getCategoryName()
             };
             tableModel.addRow(row);
@@ -68,7 +68,7 @@ public class PanelSubcategories extends PanelBase {
         String categoriaTabla = (String) tableModel.getValueAt(row, 2);
         for (int i = 0; i < cboCategory.getItemCount(); i++) {
             Category cat = (Category) cboCategory.getItemAt(i);
-            if (cat.getCategoryName().equalsIgnoreCase(categoriaTabla)) {
+            if (cat.getName().equalsIgnoreCase(categoriaTabla)) {
                 cboCategory.setSelectedIndex(i);
                 break;
             }
@@ -95,13 +95,13 @@ public class PanelSubcategories extends PanelBase {
 
         boolean exito;
         if (selectedId == -1) {
-            exito = productsManager.registSubcategory(selectedCat.getIdCategory(), name);
+            exito = productsManager.registSubcategory(selectedCat.getId(), name);
         } else {
             Subcategory subModificada = new Subcategory(
                     selectedId,
-                    selectedCat.getIdCategory(),
+                    selectedCat.getId(),
                     name,
-                    selectedCat.getCategoryName());
+                    selectedCat.getName());
             exito = productsManager.modifySubcategory(subModificada);
         }
 
