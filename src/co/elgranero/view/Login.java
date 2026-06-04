@@ -9,29 +9,30 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 public class Login extends JPanel {
+    private LoginCallback callback;
 
     private JTextField id;
     private JPasswordField passwordField;
     private JButton submit;
     private JLabel tries;
 
-    private boolean waiting;
     private String password;
     private String identifier;
 
-    private final Color colorFondo      = new Color(242, 246, 240);
-    private final Color colorVerde      = new Color(38, 90, 52);
-    private final Color colorNavBg      = new Color(28, 56, 38);
-    private final Color colorNavHover   = new Color(45, 90, 58);
-    private final Color colorBorde      = new Color(200, 218, 200);
+    private final Color colorFondo = new Color(242, 246, 240);
+    private final Color colorVerde = new Color(38, 90, 52);
+    private final Color colorNavBg = new Color(28, 56, 38);
+    private final Color colorNavHover = new Color(45, 90, 58);
+    private final Color colorBorde = new Color(200, 218, 200);
     private final Color colorLabelVerde = new Color(50, 80, 55);
-    private final Color colorTexto      = new Color(33, 33, 33);
-    private final Color colorGris       = new Color(150, 150, 150);
-    private final Color colorRojo       = new Color(211, 47, 47);
+    private final Color colorTexto = new Color(33, 33, 33);
+    private final Color colorGris = new Color(150, 150, 150);
+    private final Color colorRojo = new Color(211, 47, 47);
 
-    public Login() {
-        waiting    = true;
-        password   = null;
+    public Login(LoginCallback callback) {
+        this.callback = callback;
+
+        password = null;
         identifier = null;
 
         setLayout(new GridBagLayout());
@@ -103,13 +104,22 @@ public class Login extends JPanel {
         submit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         submit.setPreferredSize(new Dimension(0, 42));
         submit.addMouseListener(new MouseAdapter() {
-            @Override public void mouseEntered(MouseEvent e) { submit.setBackground(colorNavHover); }
-            @Override public void mouseExited(MouseEvent e)  { submit.setBackground(colorNavBg); }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                submit.setBackground(colorNavHover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                submit.setBackground(colorNavBg);
+            }
         });
         submit.addActionListener(e -> {
+            submit.setEnabled(false);
             identifier = id.getText();
-            password   = new String(passwordField.getPassword());
-            waiting    = false;
+            password = new String(passwordField.getPassword());
+            if (callback != null)
+                callback.onLogin(identifier, password);
         });
         gbc.gridy = 5;
         gbc.insets = new Insets(0, 0, 10, 0);
@@ -147,19 +157,16 @@ public class Login extends JPanel {
     }
 
     public String[] getCredentials() {
-        return new String[]{ identifier, password };
-    }
-
-    public boolean isWaiting() {
-        return waiting;
+        return new String[] { identifier, password };
     }
 
     public void setValidLogin(boolean isValid, int numTries) {
         if (isValid) {
             Component top = SwingUtilities.getAncestorOfClass(Window.class, this);
-            if (top instanceof Window) ((Window) top).dispose();
+            if (top instanceof Window)
+                ((Window) top).dispose();
         } else {
-            waiting = true;
+            submit.setEnabled(true);
             tries.setText("⚠️ Intentos restantes: " + numTries);
             tries.setForeground(colorRojo);
         }

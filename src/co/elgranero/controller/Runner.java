@@ -15,6 +15,7 @@ import co.elgranero.controller.util.DatabaseUtils;
 import co.elgranero.persistence.ConfigReader;
 import co.elgranero.persistence.SqlInstructionsReader;
 import co.elgranero.view.Login;
+import co.elgranero.view.LoginCallback;
 import co.elgranero.view.MainWindow;
 
 public final class Runner {
@@ -24,9 +25,12 @@ public final class Runner {
     private BDConnection bdConn;
     private SqlInstructionsReader sqlInstReader;
     private JFrame loginFrame;
+    private Login login;
+    private volatile boolean loginSuccess;
 
     private Runner() throws IOException {
         this.tries = 3;
+        this.loginSuccess = false;
         this.bdConn = BDConnection.getInstance();
         this.sqlInstReader = SqlInstructionsReader.getInstance();
     }
@@ -43,10 +47,11 @@ public final class Runner {
             List<String> tablesConfig = sqlInstReader.getCreateTablesOrder();
             Connection tempConn = BDConnection.getInstance().initConnection();
             checkTables(tablesConfig, tempConn);
-            if (login()) {
-                tempConn.close();
-                SwingUtilities.invokeLater(MainWindow::new);
+            login();
+            while (!loginSuccess) {
             }
+            tempConn.close();
+            SwingUtilities.invokeLater(MainWindow::new);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
@@ -55,18 +60,29 @@ public final class Runner {
     }
 
     public void fastInit() {
+        tries = 3;
         try {
-            if (login()) {
-                SwingUtilities.invokeLater(MainWindow::new);
+            login();
+            while (!loginSuccess) {
             }
+            SwingUtilities.invokeLater(MainWindow::new);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean login() throws SQLException, IOException {
-
-        Login[] loginRef = new Login[1];
+    private void login() throws SQLException, IOException {
+        login = new Login((user, password) -> {
+            try {
+                loginSuccess = bdConn.initUserConnection(user, password);
+                if (tries >= 0) {
+                    SwingUtilities.invokeLater(() -> {
+                        login.setValidLogin(loginSuccess, tries--);
+                    });
+                }
+            } catch (Exception e) {
+            }
+        });
         try {
             SwingUtilities.invokeAndWait(() -> {
                 loginFrame = new JFrame("Granero Comercial");
@@ -74,42 +90,11 @@ public final class Runner {
                 loginFrame.setSize(900, 600);
                 loginFrame.setMinimumSize(new Dimension(700, 480));
                 loginFrame.setLocationRelativeTo(null);
-                loginRef[0] = new Login();
-                loginFrame.setContentPane(loginRef[0]);
+                loginFrame.setContentPane(login);
                 loginFrame.setVisible(true);
             });
         } catch (Exception e) {
-            return false;
         }
-
-        Login login = loginRef[0];
-        boolean result = false;
-
-        while (tries > 0 && !result) {
-
-            while (login.isWaiting()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {
-                }
-            }
-
-            String[] credentials = login.getCredentials();
-            result = bdConn.initUserConnection(credentials[0], credentials[1]);
-            tries--;
-
-            final boolean loginOk = result;
-            final int triesLeft = tries;
-
-            SwingUtilities.invokeLater(() -> {
-                login.setValidLogin(loginOk, triesLeft);
-                if (loginOk && loginFrame != null) {
-                    loginFrame.dispose();
-                }
-            });
-        }
-
-        return result;
     }
 
     private void checkTables(List<String> tablesConfig, Connection tempConn)
