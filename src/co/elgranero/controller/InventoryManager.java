@@ -33,6 +33,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en registProvider:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -47,6 +49,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en registPurchase:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -62,6 +66,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en registPurchaseProduct:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -81,6 +87,8 @@ public final class InventoryManager {
             rs.close();
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en obtainProviders:");
+            e.printStackTrace();
         }
         return providers;
     }
@@ -97,13 +105,15 @@ public final class InventoryManager {
                         rs.getInt("id_proveedor"),
                         rs.getInt("id_forma_pago"),
                         date,
-                        rs.getString("proveedor"),
-                        rs.getString("forma_pago"),
+                        rs.getString("nombre_proveedor"),
+                        rs.getString("nombre_forma_pago"),
                         rs.getInt("numero_productos_comprados")));
             }
             rs.close();
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en obtainPurchases (¡Probablemente aquí está el problema!):");
+            e.printStackTrace();
         }
         return purchases;
     }
@@ -120,11 +130,13 @@ public final class InventoryManager {
                         rs.getInt("id_compra"),
                         rs.getInt("cantidad_prod_compra"),
                         rs.getDouble("precio_unitario_prod_compra"),
-                        rs.getString("producto_compra")));
+                        rs.getString("nombre_producto")));
             }
             rs.close();
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en obtainPurchaseProducts:");
+            e.printStackTrace();
         }
         return purchaseProducts;
     }
@@ -140,6 +152,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en modifyProvider:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -150,11 +164,13 @@ public final class InventoryManager {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "COMPRAS");
             pSt.setInt(1, purchase.getIdSupplier());
             pSt.setInt(2, purchase.getIdPaymentMethod());
-            pSt.setDate(3, purchase.getPurchaseDate());
-            pSt.setInt(4, purchase.getIdPurchase());
+            pSt.setDate(3, purchase.getDate());
+            pSt.setInt(4, purchase.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en modifyPurchase:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -170,6 +186,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en modifyPurchaseProduct:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -182,6 +200,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en deleteProvider:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -194,6 +214,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en deletePurchase:");
+            e.printStackTrace();
         }
         return result;
     }
@@ -207,6 +229,8 @@ public final class InventoryManager {
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            System.err.println("Error en deletePurchaseProduct:");
+            e.printStackTrace();
         }
         return result;
     }

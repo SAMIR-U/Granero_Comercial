@@ -79,13 +79,14 @@ public class ProductsManager {
     public boolean registProductPresentation(int presentationId, int productId, double presentationPrice) {
         boolean result = false;
         try {
-            PreparedStatement pSt = sir.getInsertsQueryOf(conn, "PRODUCTOS_COMPRAS");
+            PreparedStatement pSt = sir.getInsertsQueryOf(conn, "PRESENTACIONES_PRODUCTOS");
             pSt.setInt(1, presentationId);
             pSt.setInt(2, productId);
             pSt.setDouble(3, presentationPrice);
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -189,11 +190,12 @@ public class ProductsManager {
         boolean result = false;
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "CATEGORIAS_PRODUCTOS");
-            pSt.setString(1, category.getCategoryName());
-            pSt.setInt(2, category.getIdCategory());
+            pSt.setString(1, category.getName());
+            pSt.setInt(2, category.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -203,8 +205,8 @@ public class ProductsManager {
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "SUBCATEGORIAS_PRODUCTOS");
             pSt.setInt(1, subcategory.getIdCategory());
-            pSt.setString(2, subcategory.getSubcategoryName());
-            pSt.setInt(3, subcategory.getIdSubcategory());
+            pSt.setString(2, subcategory.getName());
+            pSt.setInt(3, subcategory.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
@@ -217,10 +219,10 @@ public class ProductsManager {
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "PRODUCTOS");
             pSt.setInt(1, product.getIdSubcategory());
-            pSt.setString(2, product.getProductName());
-            pSt.setString(3, product.getProductDescription());
-            pSt.setDate(4, product.getProductExpirationDate());
-            pSt.setInt(5, product.getIdProduct());
+            pSt.setString(2, product.getName());
+            pSt.setString(3, product.getDescription());
+            pSt.setDate(4, product.getExpirationDate());
+            pSt.setInt(5, product.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
