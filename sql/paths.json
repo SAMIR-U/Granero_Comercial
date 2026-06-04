@@ -102,9 +102,6 @@
         "COMPARE_SALES_OVER_TIME": "sql/reports/compare_sales_over_time.sql",
         "CUSTOMER_PURCHASE_HISTORY": "sql/reports/customer_purchase_history.sql",
         "CUSTOMER_PURCHASE_VOLUME": "sql/reports/customer_purchase_volume.sql",
-        "SALES_BY_CUSTOMER": "sql/reports/sales_by_customer.sql",
-        "SALES_BY_PRODUCT_CATEGORY": "sql/reports/sales_by_product_category.sql",
-        "SALES_BY_PRODUCT": "sql/reports/sales_by_product.sql",
         "TOP_SELLING_PRODUCTS": "sql/reports/top_selling_products.sql"
     }
 }
