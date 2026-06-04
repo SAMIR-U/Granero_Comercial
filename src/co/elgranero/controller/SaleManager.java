@@ -96,6 +96,7 @@ public class SaleManager {
                         rs.getInt("id_venta"),
                         rs.getInt("id_forma_pago"),
                         rs.getInt("per_id_cliente"),
+                        rs.getString("nombre_cliente"),
                         rs.getDate("fecha_venta"),
                         rs.getDouble("descuento_venta"),
                         rs.getInt("numero_de_productos")));
@@ -134,8 +135,8 @@ public class SaleManager {
         boolean result = false;
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "FORMAS_PAGOS");
-            pSt.setString(1, paymentMethod.getPaymentMethodName());
-            pSt.setInt(2, paymentMethod.getIdPaymentMethod());
+            pSt.setString(1, paymentMethod.getName());
+            pSt.setInt(2, paymentMethod.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
@@ -150,9 +151,9 @@ public class SaleManager {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "VENTAS");
             pSt.setInt(1, sale.getIdPaymentMethod());
             pSt.setInt(2, sale.getIdClient());
-            pSt.setDate(3, sale.getSaleDate());
-            pSt.setDouble(4, sale.getSaleDiscount());
-            pSt.setInt(5, sale.getIdSale());
+            pSt.setDate(3, sale.getDate());
+            pSt.setDouble(4, sale.getDiscount());
+            pSt.setInt(5, sale.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
