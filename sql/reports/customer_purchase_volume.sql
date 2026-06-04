@@ -14,6 +14,7 @@ JOIN VENTAS_PRODUCTOS VP
 JOIN CIUDADES CI
     ON CI.id_ciudad = P.id_ciudad
 WHERE P.tipo_persona = 'CLIENTE'
+    AND V.fecha_venta BETWEEN ? AND ?
 GROUP BY
     P.id_cliente,
     P.nombre_cliente,

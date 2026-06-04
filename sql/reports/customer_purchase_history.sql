@@ -20,4 +20,5 @@ JOIN PRODUCTOS PR
 JOIN FORMAS_PAGOS FP
     ON FP.id_forma_pago = V.id_forma_pago
 WHERE P.id_cliente = ?
+    AND V.fecha_venta BETWEEN ? AND ?
 ORDER BY V.fecha_venta DESC

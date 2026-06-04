@@ -8,10 +8,13 @@ SELECT
 FROM PRODUCTOS PR
 JOIN VENTAS_PRODUCTOS VP
     ON VP.id_producto = PR.id_producto
+JOIN VENTAS V
+    ON V.id_venta = VP.id_venta
 JOIN SUBCATEGORIAS_PRODUCTOS SP
     ON SP.id_subcategoria = PR.id_subcategoria
 JOIN CATEGORIAS_PRODUCTOS CP
     ON CP.id_categoria = SP.id_categoria
+WHERE V.fecha_venta BETWEEN ? AND ?
 GROUP BY
     PR.id_producto,
     PR.nombre_producto,
