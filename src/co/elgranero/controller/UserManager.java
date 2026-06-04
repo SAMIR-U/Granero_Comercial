@@ -132,16 +132,37 @@ public class UserManager {
         return cities;
     }
 
+    public ArrayList<City> obtainCities(int idCountry) {
+        ArrayList<City> cities = new ArrayList<City>();
+        try {
+            PreparedStatement pSt = sir.getConsultOf(conn, "CIUDADES_FILTERED");
+            pSt.setInt(1, idCountry);
+            ResultSet rs = pSt.executeQuery();
+            while (rs.next()) {
+                cities.add(new City(
+                        rs.getInt("id_ciudad"),
+                        rs.getInt("id_pais"),
+                        rs.getString("nombre_ciudad"),
+                        rs.getString("nombre_pais")));
+            }
+            rs.close();
+            pSt.close();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return cities;
+    }
+
     public boolean modifyUser(User user) {
         boolean result = false;
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "PERSONAS");
             pSt.setInt(1, user.getIdCity());
-            pSt.setString(2, user.getUserName());
-            pSt.setString(3, user.getUserDocument());
-            pSt.setString(4, user.getUserPhone());
-            pSt.setString(5, user.getPersonType());
-            pSt.setInt(6, user.getIdUser());
+            pSt.setString(2, user.getName());
+            pSt.setString(3, user.getDocument());
+            pSt.setString(4, user.getPhone());
+            pSt.setString(5, user.getType());
+            pSt.setInt(6, user.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
@@ -169,8 +190,8 @@ public class UserManager {
         try {
             PreparedStatement pSt = sir.getUpdateQueryOf(conn, "CIUDADES");
             pSt.setInt(1, city.getIdCountry());
-            pSt.setString(2, city.getCityName());
-            pSt.setInt(3, city.getIdCity());
+            pSt.setString(2, city.getName());
+            pSt.setInt(3, city.getId());
             result = pSt.executeUpdate() == 1;
             pSt.close();
         } catch (SQLException | IOException e) {
