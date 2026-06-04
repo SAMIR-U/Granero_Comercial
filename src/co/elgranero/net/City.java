@@ -1,45 +1,55 @@
 package co.elgranero.net;
 
 public class City {
-    private Integer idCity;
+    private Integer id;
     private Integer idCountry;
-    private String cityName;
+    private String name;
     private String countryName;
-    
+
     public City() {
     }
+
     public City(Integer idCity, Integer idCountry, String cityName, String countryName) {
-        this.idCity = idCity;
+        this.id = idCity;
         this.idCountry = idCountry;
-        this.cityName = cityName;
+        this.name = cityName;
         this.countryName = countryName;
     }
-    public Integer getIdCity() {
-        return idCity;
+
+    public Integer getId() {
+        return id;
     }
-    public void setIdCity(Integer idCity) {
-        this.idCity = idCity;
+
+    public void setId(Integer idCity) {
+        this.id = idCity;
     }
+
     public Integer getIdCountry() {
         return idCountry;
     }
+
     public void setIdCountry(Integer idCountry) {
         this.idCountry = idCountry;
     }
-    public String getCityName() {
-        return cityName;
+
+    public String getName() {
+        return name;
     }
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+
+    public void setName(String cityName) {
+        this.name = cityName;
     }
+
     public String getCountryName() {
         return countryName;
     }
+
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
-    
 
-    
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

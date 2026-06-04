@@ -1,75 +1,92 @@
 package co.elgranero.net;
 
 public class User {
-    private Integer idUser;
+    private Integer id;
     private Integer idCity;
-    private String userName;
-    private String userDocument;
-    private String userPhone;
-    private String personType;
+    private String name;
+    private String document;
+    private String phone;
+    private String type;
     private String cityName;
     private String countryName;
+
     public User() {
     }
+
     public User(Integer idClient, Integer idCity, String clientName, String clientDocument, String clientPhone,
             String personType, String cityName, String countryName) {
-        this.idUser = idClient;
+        this.id = idClient;
         this.idCity = idCity;
-        this.userName = clientName;
-        this.userDocument = clientDocument;
-        this.userPhone = clientPhone;
-        this.personType = personType;
+        this.name = clientName;
+        this.document = clientDocument;
+        this.phone = clientPhone;
+        this.type = personType;
         this.cityName = cityName;
         this.countryName = countryName;
     }
-    public Integer getIdUser() {
-        return idUser;
+
+    public Integer getId() {
+        return id;
     }
-    public void setIdUser(Integer idClient) {
-        this.idUser = idClient;
+
+    public void setId(Integer idClient) {
+        this.id = idClient;
     }
+
     public Integer getIdCity() {
         return idCity;
     }
+
     public void setIdCity(Integer idCity) {
         this.idCity = idCity;
     }
-    public String getUserName() {
-        return userName;
+
+    public String getName() {
+        return name;
     }
-    public void setUserName(String clientName) {
-        this.userName = clientName;
+
+    public void setName(String clientName) {
+        this.name = clientName;
     }
-    public String getUserDocument() {
-        return userDocument;
+
+    public String getDocument() {
+        return document;
     }
-    public void setUserDocument(String clientDocument) {
-        this.userDocument = clientDocument;
+
+    public void setDocument(String clientDocument) {
+        this.document = clientDocument;
     }
-    public String getUserPhone() {
-        return userPhone;
+
+    public String getPhone() {
+        return phone;
     }
-    public void setUserPhone(String clientPhone) {
-        this.userPhone = clientPhone;
+
+    public void setPhone(String clientPhone) {
+        this.phone = clientPhone;
     }
-    public String getPersonType() {
-        return personType;
+
+    public String getType() {
+        return type;
     }
-    public void setPersonType(String personType) {
-        this.personType = personType;
+
+    public void setType(String personType) {
+        this.type = personType;
     }
+
     public String getCityName() {
         return cityName;
     }
+
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
+
     public String getCountryName() {
         return countryName;
     }
+
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
 
-    
 }

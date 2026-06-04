@@ -3,33 +3,34 @@ package co.elgranero.net;
 import java.sql.Date;
 
 public class Purchase {
-    private Integer idPurchase;
+    private Integer id;
     private Integer idSupplier;
     private Integer idPaymentMethod;
-    private Date purchaseDate;
-    private String supplierName;
+    private Date date;
+    private String name;
     private String paymentMethodName;
     private Integer purchasedProductsCount;
 
     public Purchase() {
     }
+
     public Purchase(Integer idPurchase, Integer idSupplier, Integer idPaymentMethod, Date purchaseDate,
             String supplierName, String paymentMethodName, Integer purchasedProductsCount) {
-        this.idPurchase = idPurchase;
+        this.id = idPurchase;
         this.idSupplier = idSupplier;
         this.idPaymentMethod = idPaymentMethod;
-        this.purchaseDate = purchaseDate;
-        this.supplierName = supplierName;
+        this.date = purchaseDate;
+        this.name = supplierName;
         this.paymentMethodName = paymentMethodName;
         this.purchasedProductsCount = purchasedProductsCount;
     }
 
-    public Integer getIdPurchase() {
-        return idPurchase;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdPurchase(Integer idPurchase) {
-        this.idPurchase = idPurchase;
+    public void setId(Integer idPurchase) {
+        this.id = idPurchase;
     }
 
     public Integer getIdSupplier() {
@@ -48,12 +49,12 @@ public class Purchase {
         this.idPaymentMethod = idPaymentMethod;
     }
 
-    public Date getPurchaseDate() {
-        return purchaseDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
+    public void setDate(Date purchaseDate) {
+        this.date = purchaseDate;
     }
 
     public Integer getPurchasedProductsCount() {
@@ -64,12 +65,12 @@ public class Purchase {
         this.purchasedProductsCount = purchasedProductsCount;
     }
 
-    public String getSupplierName() {
-        return supplierName;
+    public String getName() {
+        return name;
     }
 
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
+    public void setName(String supplierName) {
+        this.name = supplierName;
     }
 
     public String getPaymentMethodName() {
@@ -78,6 +79,11 @@ public class Purchase {
 
     public void setPaymentMethodName(String paymentMethodName) {
         this.paymentMethodName = paymentMethodName;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

@@ -6,7 +6,8 @@ public class Provider {
     private String document;
     private String cellphone;
 
-    public Provider() {}
+    public Provider() {
+    }
 
     public Provider(int id, String name, String document, String cellphone) {
         this.id = id;
@@ -15,15 +16,40 @@ public class Provider {
         this.cellphone = cellphone;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getDocument() { return document; }
-    public void setDocument(String document) { this.document = document; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCellphone() { return cellphone; }
-    public void setCellphone(String cellphone) { this.cellphone = cellphone; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
+
+    public String getCellphone() {
+        return cellphone;
+    }
+
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

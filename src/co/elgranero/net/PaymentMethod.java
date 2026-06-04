@@ -2,35 +2,35 @@ package co.elgranero.net;
 
 public class PaymentMethod {
 
-    private Integer idPaymentMethod;
-    private String paymentMethodName;
+    private Integer id;
+    private String Name;
 
     public PaymentMethod() {
     }
 
     public PaymentMethod(Integer idPaymentMethod, String paymentMethodName) {
-        this.idPaymentMethod = idPaymentMethod;
-        this.paymentMethodName = paymentMethodName;
+        this.id = idPaymentMethod;
+        this.Name = paymentMethodName;
     }
 
-    public Integer getIdPaymentMethod() {
-        return idPaymentMethod;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdPaymentMethod(Integer idPaymentMethod) {
-        this.idPaymentMethod = idPaymentMethod;
+    public void setId(Integer idPaymentMethod) {
+        this.id = idPaymentMethod;
     }
 
-    public String getPaymentMethodName() {
-        return paymentMethodName;
+    public String getName() {
+        return Name;
     }
 
-    public void setPaymentMethodName(String paymentMethodName) {
-        this.paymentMethodName = paymentMethodName;
+    public void setName(String paymentMethodName) {
+        this.Name = paymentMethodName;
     }
 
     @Override
     public String toString() {
-        return paymentMethodName;
+        return Name;
     }
 }

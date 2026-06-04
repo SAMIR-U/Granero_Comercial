@@ -1,41 +1,55 @@
 package co.elgranero.net;
 
 public class Subcategory {
-    private Integer idSubcategory;
+    private Integer id;
     private Integer idCategory;
-    private String subcategoryName;
+    private String name;
     private String categoryName;
+
     public Subcategory() {
     }
+
     public Subcategory(Integer idSubcategory, Integer idCategory, String subcategoryName, String categoryName) {
-        this.idSubcategory = idSubcategory;
+        this.id = idSubcategory;
         this.idCategory = idCategory;
-        this.subcategoryName = subcategoryName;
+        this.name = subcategoryName;
         this.categoryName = categoryName;
     }
-    public Integer getIdSubcategory() {
-        return idSubcategory;
+
+    public Integer getId() {
+        return id;
     }
-    public void setIdSubcategory(Integer idSubcategory) {
-        this.idSubcategory = idSubcategory;
+
+    public void setId(Integer idSubcategory) {
+        this.id = idSubcategory;
     }
+
     public Integer getIdCategory() {
         return idCategory;
     }
+
     public void setIdCategory(Integer idCategory) {
         this.idCategory = idCategory;
     }
-    public String getSubcategoryName() {
-        return subcategoryName;
+
+    public String getName() {
+        return name;
     }
-    public void setSubcategoryName(String subcategoryName) {
-        this.subcategoryName = subcategoryName;
+
+    public void setName(String subcategoryName) {
+        this.name = subcategoryName;
     }
+
     public String getCategoryName() {
         return categoryName;
     }
+
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
-    
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
